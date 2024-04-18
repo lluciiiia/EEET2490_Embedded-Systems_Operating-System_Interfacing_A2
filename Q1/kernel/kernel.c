@@ -26,6 +26,7 @@ void main(){
               "........:::..:::::..::..:::::..::........::::::.......::::......:::\n\n");
 
     uart_puts("Developed By Seokyung Kim - S3939114.\n\n");
+    
     // echo everything back 
     while(1) {
     	//read each char

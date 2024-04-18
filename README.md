@@ -9,3 +9,6 @@ This repository contains the individual assessment 2 for the course EEET2490 Emb
 - Knowledge of Common Sensors
 
 ## Contents
+
+# Q1
+Welcome Message and Command Line Interpreter (CLI) - Build Bare Metal OS
