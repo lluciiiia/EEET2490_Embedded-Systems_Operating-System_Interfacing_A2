@@ -3,9 +3,6 @@
 #include "../header/command.h"
 #include "../header/ui.h"
 
-#define MAX_COMMAND_LENGTH 50
-#define MAX_HISTORY_SIZE 10
-
 void main()
 {
     // intitialize UART

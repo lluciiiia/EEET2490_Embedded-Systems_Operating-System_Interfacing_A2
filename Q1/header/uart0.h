@@ -1,5 +1,8 @@
 #include "gpio.h"
 
+#define MAX_COMMAND_LENGTH 50
+#define MAX_HISTORY_SIZE 10
+
 /* PL011 UART (UART0) registers */
 #define UART0_BASE	(MMIO_BASE + 0x201000)
 
