@@ -1,4 +1,5 @@
 #include "../header/uart0.h"
+#include "../header/util.h"
 
 #define MAX_COMMAND_LENGTH 50
 #define MAX_HISTORY_SIZE 10
@@ -117,24 +118,5 @@ void execute_command(char* command) {
     } else {
         uart_puts("Command not recognized\n");
     }
-}
-
-// Custom function to copy a string
-void copy_string(char *dest, const char *src)
-{
-    while (*src)
-    {
-        *dest++ = *src++;
-    }
-    *dest = '\0'; // Add null terminator to the end of the destination string
-}
-
-// Custom implementation of compare_string
-int compare_string(const char *str1, const char *str2) {
-    while (*str1 && *str2 && *str1 == *str2) {
-        str1++;
-        str2++;
-    }
-    return (*str1 == '\0' && *str2 == '\0') ? 0 : (*str1 - *str2);
 }
 
