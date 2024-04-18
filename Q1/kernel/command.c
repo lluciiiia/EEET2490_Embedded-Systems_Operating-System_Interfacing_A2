@@ -44,13 +44,8 @@ void clear_command()
     uart_puts("\033[2J\033[H"); // ANSI escape sequence to clear the screen
 }
 
-void setcolor_command(char *text_color, char *background_color)
+void setcolor_command(char *command)
 {
-    uart_puts("Text color set to ");
-    uart_puts(text_color);
-    uart_puts(" and background color set to ");
-    uart_puts(background_color);
-    uart_puts("\n");
 }
 
 void showinfo_command()
@@ -78,9 +73,9 @@ void execute_command(char *command)
     {
         clear_command();
     }
-    else if (compare_string(command, "setcolor") == 0)
+    else if (compare_string_start(command, "setcolor") == 0)
     {
-        setcolor_command("default", "default"); // Default colors
+        setcolor_command(command);
     }
     else if (compare_string(command, "showinfo") == 0)
     {
