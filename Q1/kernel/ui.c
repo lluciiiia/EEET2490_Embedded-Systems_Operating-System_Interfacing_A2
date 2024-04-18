@@ -1,6 +1,5 @@
 #include "../header/ui.h"
 
-// Function to display the OS name and prompt
 void display_welcome_msg()
 {
     // Print an ASCII art welcome message
@@ -25,7 +24,7 @@ void display_welcome_msg()
     uart_puts("Developed By Seokyung Kim - S3939114.\n\n");
 }
 
-// Function to display the OS name and prompt
-void display_prompt() {
+void display_prompt()
+{
     uart_puts("MyOS> ");
 }
