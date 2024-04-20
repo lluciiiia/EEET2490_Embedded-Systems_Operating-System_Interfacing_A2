@@ -18,3 +18,7 @@
 
 #define WHITE_TEXT "\033[37m"
 #define WHITE_BACKGROUND "\033[47m"
+
+#define RESET_COLOR "\033[0m"
+
+int change_color(char *text, char *background);

@@ -10,4 +10,4 @@ void setcolor_command(char *command);
 
 void showinfo_command();
 
-void execute_command(char* command);
+void execute_command(char *command);

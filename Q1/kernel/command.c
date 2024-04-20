@@ -46,6 +46,65 @@ void clear_command()
 
 void setcolor_command(char *command)
 {
+    char *token = command;
+    char *text_color;
+    char *background_color;
+
+    while (*token != '\0')
+    {
+        // Check if the token is "-t"
+        if (compare_string(token, "-t") == 0)
+        {
+            uart_puts("\n-t found\n");
+
+            token += 2;
+
+            while (*token == ' ')
+            {
+                token++;
+            }
+
+            text_color = token;
+
+            while (*token != ' ' && *token != '\0')
+            {
+                token++;
+            }
+
+            *token = '\0';
+        }
+        // Check if the token is "-b"
+        else if (compare_string(token, "-b") == 0)
+        {
+
+            uart_puts("\n-b found\n");
+            token += 2;
+
+            while (*token == ' ')
+            {
+                token++;
+            }
+
+            background_color = token;
+            while (*token != ' ' && *token != '\0')
+            {
+                token++;
+            }
+
+            *token = '\0';
+        }
+        token++;
+    }
+
+    if (text_color != '\0' || background_color != '\0')
+    {
+        change_color(text_color, background_color);
+        uart_puts("\nColor has changed!!\n");
+        return;
+    }
+
+    uart_puts("\nInvalid command! Please specify at least one color.\n");
+    uart_puts("\nLoop Done\n");
 }
 
 void showinfo_command()
@@ -75,7 +134,14 @@ void execute_command(char *command)
     }
     else if (compare_string_start(command, "setcolor") == 0)
     {
-        setcolor_command(command);
+        // Skip "help" and any leading spaces
+        char *color_command = command + 8; // "help" has 8 characters
+        while (*color_command == ' ')
+        {
+            color_command++;
+        }
+
+        setcolor_command(color_command);
     }
     else if (compare_string(command, "showinfo") == 0)
     {
