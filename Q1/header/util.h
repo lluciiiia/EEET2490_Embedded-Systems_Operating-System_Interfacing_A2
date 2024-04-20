@@ -1,3 +1,6 @@
+#define MAX_COMMAND_LENGTH 50
+#define MAX_HISTORY_SIZE 10
+
 void copy_string(char *dest, const char *src);
 
 int compare_string(const char *str1, const char *str2);

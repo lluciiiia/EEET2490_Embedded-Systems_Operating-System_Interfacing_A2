@@ -1,4 +1,4 @@
-#include "../header/uart0.h"
+#include "../header/uart1.h"
 #include "../header/util.h"
 #include "../header/color.h"
 
