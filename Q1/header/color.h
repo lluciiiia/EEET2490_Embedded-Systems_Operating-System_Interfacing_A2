@@ -1,3 +1,5 @@
+#include "./util.h"
+
 #define BLACK_TEXT "\033[30m"
 #define BLACK_BACKGROUND "\033[40m"
 

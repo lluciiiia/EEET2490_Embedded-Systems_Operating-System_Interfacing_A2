@@ -47,21 +47,28 @@ void clear_command()
 void setcolor_command(char *command)
 {
     char *token = command;
-    char *text_color;
-    char *background_color;
+    char *text_color = (void *)0;
+    char *background_color = (void *)0;
+    int color_found = 0;
 
     while (*token != '\0')
     {
-        // Check if the token is "-t"
-        if (compare_string(token, "-t") == 0)
+        uart_puts("*");
+        // Check if the token starts with "-t"
+        if (token[0] == '-' && token[1] == 't')
         {
-            uart_puts("\n-t found\n");
 
             token += 2;
 
             while (*token == ' ')
             {
                 token++;
+            }
+
+            if (*token == '\0') {
+                uart_puts("\nInvalid command! Please specify a color after -t.\n");
+                uart_puts("Loop Done\n");
+                return;
             }
 
             text_color = token;
@@ -72,32 +79,42 @@ void setcolor_command(char *command)
             }
 
             *token = '\0';
+            color_found = 1;
         }
-        // Check if the token is "-b"
-        else if (compare_string(token, "-b") == 0)
+        // Check if the token starts with "-b"
+        else if (token[0] == '-' && token[1] == 'b')
         {
 
-            uart_puts("\n-b found\n");
-            token += 2;
+            token += 2; 
 
             while (*token == ' ')
             {
                 token++;
             }
 
+            if (*token == '\0') {
+                uart_puts("\nInvalid command! Please specify a color after -b.\n");
+                uart_puts("Loop Done\n");
+                return;
+            }
+
             background_color = token;
+
             while (*token != ' ' && *token != '\0')
             {
                 token++;
             }
 
             *token = '\0';
+            color_found = 1;
         }
         token++;
     }
 
-    if (text_color != '\0' || background_color != '\0')
+    if (color_found)
     {
+        toUppercase(text_color);
+        toUppercase(background_color);
         change_color(text_color, background_color);
         uart_puts("\nColor has changed!!\n");
         return;
@@ -106,6 +123,8 @@ void setcolor_command(char *command)
     uart_puts("\nInvalid command! Please specify at least one color.\n");
     uart_puts("\nLoop Done\n");
 }
+
+
 
 void showinfo_command()
 {

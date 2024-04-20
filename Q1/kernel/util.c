@@ -36,3 +36,38 @@ int compare_string_start(const char *str, const char *prefix)
     return -1;
 }
 
+void toUppercase(char *str) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] >= 'a' && str[i] <= 'z') {
+            str[i] -= 32; 
+        }
+    }
+}
+
+unsigned int strlen(const char *str) {
+    unsigned int length = 0;
+    while (*(str++)) {
+        length++;
+    }
+    return length;
+}
+
+
+char *strcat(char *dest, const char *src) {
+    char *original_dest = dest;
+
+    while (*dest) {
+        dest++;
+    }
+
+    while (*src) {
+        *dest = *src;
+        dest++;
+        src++;
+    }
+
+    *dest = '\0';
+
+    return original_dest; 
+}
+

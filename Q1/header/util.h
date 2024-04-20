@@ -4,3 +4,8 @@ int compare_string(const char *str1, const char *str2);
 
 int compare_string_start(const char *str, const char *prefix);
 
+void toUppercase(char *str);
+
+char *strcat(char *dest, const char *src);
+
+unsigned int strlen(const char *str);
