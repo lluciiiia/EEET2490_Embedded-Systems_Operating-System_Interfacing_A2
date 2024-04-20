@@ -1,5 +1,45 @@
 #include "../header/command.h"
 
+void execute_command(char *command)
+{
+    // Check if the command starts with "help"
+    if (compare_string_start(command, "help") == 0)
+    {
+        // Skip "help" and any leading spaces
+        char *command_name = command + 4; // "help" has 4 characters
+        while (*command_name == ' ')
+        {
+            command_name++;
+        }
+
+        // Pass the command name to help_command
+        help_command(command_name);
+    }
+    else if (compare_string(command, "clear") == 0)
+    {
+        clear_command();
+    }
+    else if (compare_string_start(command, "setcolor") == 0)
+    {
+        // Skip "help" and any leading spaces
+        char *color_command = command + 8; // "help" has 8 characters
+        while (*color_command == ' ')
+        {
+            color_command++;
+        }
+
+        setcolor_command(color_command);
+    }
+    else if (compare_string(command, "showinfo") == 0)
+    {
+        showinfo_command();
+    }
+    else
+    {
+        uart_puts("\nCommand not recognized\n");
+    }
+}
+
 void help_command(char *command)
 {
     // Check if the command is "help" without any argument
@@ -65,7 +105,8 @@ void setcolor_command(char *command)
                 token++;
             }
 
-            if (*token == '\0') {
+            if (*token == '\0')
+            {
                 uart_puts("\nInvalid command! Please specify a color after -t.\n");
                 uart_puts("Loop Done\n");
                 return;
@@ -85,14 +126,15 @@ void setcolor_command(char *command)
         else if (token[0] == '-' && token[1] == 'b')
         {
 
-            token += 2; 
+            token += 2;
 
             while (*token == ' ')
             {
                 token++;
             }
 
-            if (*token == '\0') {
+            if (*token == '\0')
+            {
                 uart_puts("\nInvalid command! Please specify a color after -b.\n");
                 uart_puts("Loop Done\n");
                 return;
@@ -121,53 +163,11 @@ void setcolor_command(char *command)
     }
 
     uart_puts("\nInvalid command! Please specify at least one color.\n");
-    uart_puts("\nLoop Done\n");
+    uart_puts("Loop Done\n");
 }
-
-
 
 void showinfo_command()
 {
     uart_puts("Board revision: REV1.0\n");
     uart_puts("Board MAC address: AA:BB:CC:DD:EE:FF\n");
-}
-
-void execute_command(char *command)
-{
-    // Check if the command starts with "help"
-    if (compare_string_start(command, "help") == 0)
-    {
-        // Skip "help" and any leading spaces
-        char *command_name = command + 4; // "help" has 4 characters
-        while (*command_name == ' ')
-        {
-            command_name++;
-        }
-
-        // Pass the command name to help_command
-        help_command(command_name);
-    }
-    else if (compare_string(command, "clear") == 0)
-    {
-        clear_command();
-    }
-    else if (compare_string_start(command, "setcolor") == 0)
-    {
-        // Skip "help" and any leading spaces
-        char *color_command = command + 8; // "help" has 8 characters
-        while (*color_command == ' ')
-        {
-            color_command++;
-        }
-
-        setcolor_command(color_command);
-    }
-    else if (compare_string(command, "showinfo") == 0)
-    {
-        showinfo_command();
-    }
-    else
-    {
-        uart_puts("\nCommand not recognized\n");
-    }
 }
