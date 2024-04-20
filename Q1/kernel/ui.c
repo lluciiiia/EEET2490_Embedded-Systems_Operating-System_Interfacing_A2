@@ -26,5 +26,5 @@ void display_welcome_msg()
 
 void display_prompt()
 {
-    uart_puts("MyOS> ");
+    uart_puts("KimOS> ");
 }
