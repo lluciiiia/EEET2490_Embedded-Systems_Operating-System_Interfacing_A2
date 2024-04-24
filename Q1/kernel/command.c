@@ -168,6 +168,5 @@ void setcolor_command(char *command)
 
 void showinfo_command()
 {
-    uart_puts("Board revision: REV1.0\n");
-    uart_puts("Board MAC address: AA:BB:CC:DD:EE:FF\n");
+    get_board_info();
 }

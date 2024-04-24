@@ -42,5 +42,9 @@ extern volatile unsigned int mBuf[36];
 #define MBOX_TAG_SETCLKRATE 0x00038002
 #define MBOX_TAG_LAST 0
 
+#define MBOX_TAG_REVISION 0x00010002
+#define MBOX_TAG_MAC_ADDRESS 0x00010003
+
 /* Function Prototypes */
 int mbox_call(unsigned int buffer_addr, unsigned char channel);
+void  get_board_info();
