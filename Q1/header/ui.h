@@ -1,4 +1,4 @@
-#include "../header/uart1.h"
+#include "../header/uart0.h"
 
 void display_welcome_msg();
 

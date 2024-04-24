@@ -1,10 +1,11 @@
-#include "../header/uart1.h"
+#include "../header/uart0.h"
 #include "../header/util.h"
 #include "../header/command.h"
 #include "../header/ui.h"
 
 void main()
 {
+    
     // intitialize UART
     uart_init();
 

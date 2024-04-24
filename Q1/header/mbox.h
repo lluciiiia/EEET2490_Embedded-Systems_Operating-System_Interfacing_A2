@@ -1,5 +1,5 @@
 #include "./gpio.h"
-#include "./uart1.h"
+#include "./uart0.h"
 
 /* a properly aligned buffer */
 extern volatile unsigned int mBuf[36];
