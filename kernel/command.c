@@ -58,7 +58,13 @@ void execute_command(char *command)
     }
     else if (compare_string_start(command, "sethandshaking") == 0)
     {
-        set_handshaking_command(command + strlen("sethandshaking"));
+        // Skip "sethandshaking" and any leading spaces
+        char *command_name = command + 14; // "sethandshaking" has 14 characters
+        while (*command_name == ' ')
+        {
+            command_name++;
+        }
+        set_handshaking_command(command_name);
     }
     else
     {
@@ -146,7 +152,6 @@ void clear_command()
 
 void setcolor_command(char *command)
 {
-
     char *token = command;
     char *text_color = (void *)0;
     char *background_color = (void *)0;

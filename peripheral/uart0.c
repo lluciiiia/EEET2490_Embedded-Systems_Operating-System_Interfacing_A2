@@ -180,6 +180,7 @@ void uart_hex_byte(uint8_t byte)
 
 void set_baud_rate_command(char *arg)
 {
+	display_start("Baud Rate Setting");
 	unsigned int baud_rate = atoi(arg); // Convert string to integer
 
 	// Calculate the baud rate divisor
@@ -199,17 +200,22 @@ void set_baud_rate_command(char *arg)
 	UART0_LCRH = (UART0_LCRH & ~UART0_LCRH_BRK) | UART0_LCRH_WLEN_8BIT;
 	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
 
-	uart_puts("\nBaud Rate has been set to ");
-	uart_dec(baud_rate);
-	uart_puts("\nIBRD: ");
+		uart_puts("\nIBRD: ");
 	uart_dec(UART0_IBRD);
 	uart_puts("\nFBRD: ");
 	uart_dec(UART0_FBRD);
-	uart_puts("\n");
+	uart_puts("\n\nBaud Rate has been set to ");
+	uart_dec(baud_rate);
+	display_end();
 }
 
 void set_data_bits_command(char *arg)
 {
+	display_start("Data Bits Setting");
+
+	uart_puts("\nLDRH before setting data bits: ");
+	uart_hex(UART0_LCRH);
+
 	// Get the number of data bits from the argument
 	int data_bits = atoi(arg);
 
@@ -233,13 +239,19 @@ void set_data_bits_command(char *arg)
 		uart_puts("\nInvalid number of data bits.\n");
 		return;
 	}
-	uart_puts("\nThe number of data bits has been set to ");
+
+	uart_puts("\nLDRH after setting data bits: ");
 	uart_hex(UART0_LCRH);
-	uart_puts("\n");
+
+	uart_puts("\n\nThe number of data bits has been set to ");
+	uart_puts(arg);
+	display_end();
 }
 
 void set_stop_bits_command(char *arg)
 {
+	display_start("Stop Bits Setting");
+
 	uart_puts("\nLDRH before setting stop bits: ");
 	uart_hex(UART0_LCRH);
 	// Get the number of stop bits from the argument
@@ -262,11 +274,15 @@ void set_stop_bits_command(char *arg)
 	}
 	uart_puts("\nLDRH after setting stop bits: ");
 	uart_hex(UART0_LCRH);
-	uart_puts("\n");
+	uart_puts("\n\nStop bits have been set to ");
+	uart_puts(arg);
+	display_end();
 }
 
 void set_parity_command(char *arg)
 {
+	display_start("Parity Setting");
+
 	uart_puts("\nLDRH before setting parity: ");
 	uart_hex(UART0_LCRH);
 
@@ -291,11 +307,44 @@ void set_parity_command(char *arg)
 
 	uart_puts("\nLDRH after setting parity: ");
 	uart_hex(UART0_LCRH);
-	uart_puts("\nParity has been set to ");
+	uart_puts("\n\nParity has been set to ");
 	uart_puts(arg);
-	uart_puts("\n");
+	display_end();
 }
 
 void set_handshaking_command(char *arg)
 {
+	display_start("Handshaking Setting");
+
+	uart_puts("\nCR before handshaking: ");
+	uart_hex(UART0_CR);
+	// Parse the argument to determine the handshaking type
+	// For example, "none", "hardware", "software"
+	if (compare_string(arg, "none") == 0)
+	{
+		// Disable both hardware and software handshaking
+		UART0_CR &= ~(UART0_CR_CTSEN | UART0_CR_RTSEN);
+	}
+	else if (compare_string(arg, "hardware") == 0)
+	{
+		// Enable hardware handshaking
+		UART0_CR |= UART0_CR_CTSEN;
+	}
+	else if (compare_string(arg, "software") == 0)
+	{
+		// Enable software handshaking
+		UART0_CR |= UART0_CR_RTSEN;
+	}
+	else
+	{
+		// Invalid handshaking argument
+		uart_puts("\nInvalid handshaking type. Please use 'none', 'hardware', or 'software'.\n");
+		return;
+	}
+
+	uart_puts("\nCR after handshaking: ");
+	uart_hex(UART0_CR);
+	uart_puts("\n\nHandshaking control has been set to ");
+	uart_puts(arg);
+	display_end();
 }
