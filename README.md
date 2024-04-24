@@ -15,20 +15,22 @@ This repository contains the individual assessment 2 for the course EEET2490 Emb
 - Implement specific commands as described 
 
 ### Available Commands and Descriptions
-- **help**: Show brief information of all commands. Use `help <command_name>` to show full information of a specific command.
+- `help`: Show brief information of all commands. 
 
-- **clear**: Clear screen.
+- `help <command_name>`: Show full information of a specific command.
 
-- **setcolor -t <text color> -b <background color>**: Set text color and/or background color. Available colors: black, red, yellow, blue, purple, cyan, white.
+- `clear`: Clear screen.
 
-- **showinfo**: Show board revision and board MAC address.
+- `setcolor -t <text color> -b <background color>`: Set text color and/or background color. Available colors: black, red, yellow, blue, purple, cyan, white.
 
-- **setbaudrate <baud rates>**: Set desired baud rates. Available baud rates: 9600, 19200, 38400, 57600, 115200.
+- `showinfo`: Show board revision and board MAC address.
 
-- **setdatabits \<the number of data bits\>**: Set the number of data bits. Data bits: 5, 6, 7, or 8.
+- `setbaudrate <baud rates>`: Set desired baud rates. Available baud rates: 9600, 19200, 38400, 57600, 115200.
 
-- **setstopbits \<1 or 2\>**: Select between one or two stop bits. Options: 1 or 2.
+- **`setdatabits <the number of data bits>`**: Set the number of data bits. Data bits: 5, 6, 7, or 8.
 
-- **setparity \<none, even or odd\>**: Configure parity. Options: none, even, or odd.
+- **`setstopbits <1 or 2>`**: Select between one or two stop bits. Options: 1 or 2.
 
-- **sethandshaking**: Handshaking control: CTS/RTS handshaking.
+- **`setparity <none, even or odd>`**: Configure parity. Options: none, even, or odd.
+
+- **`sethandshaking`**: Handshaking control: CTS/RTS handshaking.
