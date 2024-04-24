@@ -171,7 +171,34 @@ void uart_dec(int num)
 
 void set_baud_rate_command(char *arg)
 {
+    unsigned int baud_rate = atoi(arg); // Convert string to integer
+
+    // Calculate the baud rate divisor
+    float BAUDDIVs = UART0_CLOCK_FREQ / (16.0f * baud_rate); // Assuming UART0_CLOCK_FREQ is 48MHz
+
+    // Set the integer and fractional parts of the baud rate divisor
+    UART0_IBRD = (int)BAUDDIVs;
+    UART0_FBRD = (int)((BAUDDIVs - UART0_IBRD) * 64 + 0.5);
+
+    UART0_CR &= ~UART0_CR_UARTEN; // Disable UART0
+    UART0_CR = 0x0; // Clear the control register
+
+    // Set baud rate and characteristics
+    UART0_IBRD = (int)BAUDDIVs;
+    UART0_FBRD = (int)(((BAUDDIVs - UART0_IBRD) * 64) + 0.5);
+
+    UART0_LCRH = (UART0_LCRH & ~UART0_LCRH_BRK) | UART0_LCRH_WLEN_8BIT;
+    UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
+
+    uart_puts("\nBaud Rate has been set to ");
+    uart_dec(baud_rate);
+    uart_puts("\nIBRD: ");
+    uart_dec(UART0_IBRD);
+    uart_puts("\nFBRD: ");
+    uart_dec(UART0_FBRD);
+    uart_puts("\n");
 }
+
 
 void set_data_bits_command(char *arg)
 {
