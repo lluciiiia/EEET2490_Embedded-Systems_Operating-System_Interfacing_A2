@@ -221,7 +221,7 @@ void set_data_bits_command(char *arg)
 		break;
 	default:
 		// Invalid number of data bits
-		uart_puts("Invalid number of data bits.\n");
+		uart_puts("\nInvalid number of data bits.\n");
 		return;
 	}
 	uart_puts("\nThe number of data bits has been set to ");
@@ -230,7 +230,30 @@ void set_data_bits_command(char *arg)
 }
 
 void set_stop_bits_command(char *arg)
-{
+{ 
+	uart_puts("\nLDRH before setting stop bits: ");
+	uart_hex(UART0_LCRH);
+	// Get the number of stop bits from the argument
+	int stop_bits = atoi(arg);
+
+	UART0_LCRH &= ~UART0_LCRH_STP2;
+
+	// Update the Line Control Register (LCRH) accordingly
+	switch (stop_bits)
+	{
+	case 1:
+		break;
+	case 2:
+		UART0_LCRH |= UART0_LCRH_STP2;
+		break;
+	default:
+		// Invalid number of stop bits
+		uart_puts("\nInvalid number of stop bits.\n");
+		return;
+	}
+	uart_puts("\nLDRH after setting stop bits: ");
+	uart_hex(UART0_LCRH);
+	uart_puts("\n");
 }
 
 void set_parity_command(char *arg)
