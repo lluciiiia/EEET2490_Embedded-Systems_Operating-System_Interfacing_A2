@@ -8,12 +8,27 @@ This repository contains the individual assessment 2 for the course EEET2490 Emb
 - Components and Development Process of an operating system
 - Knowledge of Common Sensors
 
-## Contents
-
-# Q1
-Welcome Message and Command Line Interpreter (CLI) - Build Bare Metal OS
+## Build Bare Metal OS
 - Displaying Welcome Message and OS Name Prompt
-- Implementing Command Line Interpreter (CLI)
 - Auto-completion with TAB key: Implement logic to suggest completions based on partially entered commands.
 - Command history navigation: Allow users to navigate through previously entered commands using _ and + keys.
-- Implement specific commands as described (help, clear, setcolor, showinfo).
+- Implement specific commands as described 
+
+### Available Commands and Descriptions
+- **help**: Show brief information of all commands. Use `help <command_name>` to show full information of a specific command.
+
+- **clear**: Clear screen.
+
+- **setcolor -t <text color> -b <background color>**: Set text color and/or background color. Available colors: black, red, yellow, blue, purple, cyan, white.
+
+- **showinfo**: Show board revision and board MAC address.
+
+- **setbaudrate <baud rates>**: Set desired baud rates. Available baud rates: 9600, 19200, 38400, 57600, 115200.
+
+- **setdatabits \<the number of data bits\>**: Set the number of data bits. Data bits: 5, 6, 7, or 8.
+
+- **setstopbits \<1 or 2\>**: Select between one or two stop bits. Options: 1 or 2.
+
+- **setparity \<none, even or odd\>**: Configure parity. Options: none, even, or odd.
+
+- **sethandshaking**: Handshaking control: CTS/RTS handshaking.
