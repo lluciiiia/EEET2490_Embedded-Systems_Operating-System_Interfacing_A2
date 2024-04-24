@@ -34,6 +34,26 @@ void execute_command(char *command)
     {
         showinfo_command();
     }
+    else if (compare_string_start(command, "setbaudrate") == 0)
+    {
+        set_baud_rate_command(command + strlen("setbaudrate"));
+    }
+    else if (compare_string_start(command, "setdatabits") == 0)
+    {
+        set_data_bits_command(command + strlen("setdatabits"));
+    }
+    else if (compare_string_start(command, "setstopbits") == 0)
+    {
+        set_stop_bits_command(command + strlen("setstopbits"));
+    }
+    else if (compare_string_start(command, "setparity") == 0)
+    {
+        set_parity_command(command + strlen("setparity"));
+    }
+    else if (compare_string_start(command, "sethandshaking") == 0)
+    {
+        set_handshaking_command(command + strlen("sethandshaking"));
+    }
     else
     {
         uart_puts("\nCommand not recognized\n");
@@ -73,26 +93,7 @@ void help_command(char *command)
         {
             uart_puts("\nshowinfo - Show board revision and board MAC address\n");
         }
-        else if (compare_string_start(command, "setbaudrate") == 0)
-        {
-            set_baud_rate_command(command + strlen("setbaudrate"));
-        }
-        else if (compare_string_start(command, "setdatabits") == 0)
-        {
-            set_data_bits_command(command + strlen("setdatabits"));
-        }
-        else if (compare_string_start(command, "setstopbits") == 0)
-        {
-            set_stop_bits_command(command + strlen("setstopbits"));
-        }
-        else if (compare_string_start(command, "setparity") == 0)
-        {
-            set_parity_command(command + strlen("setparity"));
-        }
-        else if (compare_string_start(command, "sethandshaking") == 0)
-        {
-            set_handshaking_command(command + strlen("sethandshaking"));
-        }
+
         else
         {
             uart_puts("\nCommand not found.\n");

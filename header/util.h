@@ -12,3 +12,5 @@ void toUppercase(char *str);
 char *strcat(char *dest, const char *src);
 
 unsigned int strlen(const char *str);
+
+int atoi(const char *str);

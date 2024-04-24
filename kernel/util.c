@@ -71,3 +71,32 @@ char *strcat(char *dest, const char *src) {
     return original_dest; 
 }
 
+int atoi(const char *str) {
+    int result = 0;
+    int sign = 1; // Sign of the number, initialize to positive
+    int i = 0;
+
+    // Skip leading whitespaces
+    while (str[i] == ' ') {
+        i++;
+    }
+
+    // Check for sign
+    if (str[i] == '-') {
+        sign = -1;
+        i++;
+    } else if (str[i] == '+') {
+        i++;
+    }
+
+    // Convert digits to integer
+    while (str[i] >= '0' && str[i] <= '9') {
+        result = result * 10 + (str[i] - '0');
+        i++;
+    }
+
+    // Apply sign
+    return sign * result;
+}
+
+

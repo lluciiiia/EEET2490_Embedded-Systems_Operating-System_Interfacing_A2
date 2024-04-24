@@ -2,6 +2,7 @@
 
 #define MAX_COMMAND_LENGTH 50
 #define MAX_HISTORY_SIZE 10
+#define UART0_CLOCK_FREQ 4000000.0f // For Mailbox
 
 /* PL011 UART (UART0) registers */
 #define UART0_BASE	(MMIO_BASE + 0x201000)
@@ -150,6 +151,7 @@
 #define UART0_ITOP	(* (volatile unsigned int*)(UART0_BASE + 0x88))
 /* TDR = Test Data Register */
 #define UART0_TDR	(* (volatile unsigned int*)(UART0_BASE + 0x8C))
+
 
 
 /* Function prototypes */
