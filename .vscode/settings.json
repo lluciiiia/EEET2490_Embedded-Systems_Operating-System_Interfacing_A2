@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "*.ejs": "ets",
+        "command.h": "c",
+        "util.h": "c",
+        "uart0.h": "c",
+        "color.h": "c",
+        "gpio.h": "c",
+        "uart0.h": "c",
+        "ui.h": "c"
+    }
+}
