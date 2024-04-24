@@ -66,7 +66,8 @@ void help_command(char *command)
         }
         else if (compare_string(command, "setcolor") == 0)
         {
-            uart_puts("\nsetcolor -t <text color> -b <background color> - Set text color and/or background color\n");
+            uart_puts("\nsetcolor -t <text color> -b <background color> - Set text color and/or background color of the console.\n");
+            uart_puts("You have following color options: black, red, yellow, blue, purple, cyan, white.\n");
         }
         else if (compare_string(command, "showinfo") == 0)
         {
@@ -74,7 +75,7 @@ void help_command(char *command)
         }
         else
         {
-            uart_puts("\nCommand not found\n");
+            uart_puts("\nCommand not found.\n");
         }
     }
 }
