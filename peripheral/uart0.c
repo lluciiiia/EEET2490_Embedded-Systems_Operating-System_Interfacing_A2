@@ -174,7 +174,7 @@ void set_baud_rate_command(char *arg)
     unsigned int baud_rate = atoi(arg); // Convert string to integer
 
     // Calculate the baud rate divisor
-    float BAUDDIVs = UART0_CLOCK_FREQ / (16.0f * baud_rate); // Assuming UART0_CLOCK_FREQ is 48MHz
+    float BAUDDIVs = UART0_CLOCK_FREQ / (16.0f * baud_rate);
 
     // Set the integer and fractional parts of the baud rate divisor
     UART0_IBRD = (int)BAUDDIVs;
