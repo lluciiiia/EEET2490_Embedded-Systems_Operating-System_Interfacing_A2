@@ -77,6 +77,11 @@ void help_command(char *command)
         uart_puts("clear - Clear screen\n");
         uart_puts("setcolor -t <text color> -b <background color> - Set text color and/or background color\n");
         uart_puts("showinfo - Show board revision and board MAC address\n");
+        uart_puts("setbaudrate - Configurable Baud Rate: Support for various baud rates, including 9600, 19200, 38400, 57600, and 115200 bits per second.\n");
+        uart_puts("setdatabits - Data Bits: Support for configuring the number of data bits (5, 6, 7, or 8).\n");
+        uart_puts("setstopbits - Stop Bits: Ability to select between one or two stop bits.\n");
+        uart_puts("setparity - Parity: Support for none, even, and odd parity configurations.\n");
+        uart_puts("sethandshaking - Handshaking control: CTS/RTS handshaking.\n");
     }
     else
     {
@@ -99,7 +104,26 @@ void help_command(char *command)
         {
             uart_puts("\nshowinfo - Show board revision and board MAC address\n");
         }
-
+        else if (compare_string(command, "setbaudrate") == 0)
+        {
+            uart_puts("\nsetbaudrate - Configurable Baud Rate: Support for various baud rates, including 9600, 19200, 38400, 57600, and 115200 bits per second.\n");
+        }
+        else if (compare_string(command, "setdatabits") == 0)
+        {
+            uart_puts("\nsetdatabits - Data Bits: Support for configuring the number of data bits (5, 6, 7, or 8).\n");
+        }
+        else if (compare_string(command, "setstopbits") == 0)
+        {
+            uart_puts("\nsetstopbits - Stop Bits: Ability to select between one or two stop bits.\n");
+        }
+        else if (compare_string(command, "setparity") == 0)
+        {
+            uart_puts("\nsetparity - Parity: Support for none, even, and odd parity configurations.\n");
+        }
+        else if (compare_string(command, "sethandshaking") == 0)
+        {
+            uart_puts("\nsethandshaking - Handshaking control: CTS/RTS handshaking.\n");
+        }
         else
         {
             uart_puts("\nCommand not found.\n");
