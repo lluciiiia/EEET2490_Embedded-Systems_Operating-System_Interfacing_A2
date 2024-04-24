@@ -15,17 +15,17 @@ This repository contains the individual assessment 2 for the course EEET2490 Emb
 - Implement specific commands as described 
 
 ### Available Commands and Descriptions
-- `help`: Show brief information of all commands. 
+- **`help`**: Show brief information of all commands. 
 
-- `help <command_name>`: Show full information of a specific command.
+- **`help <command_name>`**: Show full information of a specific command.
 
-- `clear`: Clear screen.
+- **`clear`**: Clear screen.
 
-- `setcolor -t <text color> -b <background color>`: Set text color and/or background color. Available colors: black, red, yellow, blue, purple, cyan, white.
+- **`setcolor -t <text color> -b <background color>`**: Set text color and/or background color. Available colors: black, red, yellow, blue, purple, cyan, white.
 
-- `showinfo`: Show board revision and board MAC address.
+- **`showinfo`**: Show board revision and board MAC address.
 
-- `setbaudrate <baud rates>`: Set desired baud rates. Available baud rates: 9600, 19200, 38400, 57600, 115200.
+- **`setbaudrate <baud rates>`**: Set desired baud rates. Available baud rates: 9600, 19200, 38400, 57600, 115200.
 
 - **`setdatabits <the number of data bits>`**: Set the number of data bits. Data bits: 5, 6, 7, or 8.
 
