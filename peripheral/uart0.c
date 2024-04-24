@@ -230,7 +230,7 @@ void set_data_bits_command(char *arg)
 }
 
 void set_stop_bits_command(char *arg)
-{ 
+{
 	uart_puts("\nLDRH before setting stop bits: ");
 	uart_hex(UART0_LCRH);
 	// Get the number of stop bits from the argument
@@ -258,6 +258,33 @@ void set_stop_bits_command(char *arg)
 
 void set_parity_command(char *arg)
 {
+	uart_puts("\nLDRH before setting parity: ");
+	uart_hex(UART0_LCRH);
+
+	if (compare_string(arg, "none") == 0)
+	{
+		UART0_LCRH &= ~(UART0_LCRH_PEN | UART0_LCRH_EPS);
+	}
+	else if (compare_string(arg, "even") == 0)
+	{
+		UART0_LCRH |= UART0_LCRH_PEN | UART0_LCRH_EPS;
+	}
+	else if (compare_string(arg, "odd") == 0)
+	{
+		UART0_LCRH |= UART0_LCRH_PEN;
+		UART0_LCRH &= ~UART0_LCRH_EPS;
+		}
+	else
+	{
+		uart_puts("\nInvalid parity type. Please use 'none', 'even', or 'odd'.\n");
+		return;
+	}
+
+	uart_puts("\nLDRH after setting parity: ");
+	uart_hex(UART0_LCRH);
+	uart_puts("\nParity has been set to ");
+	uart_puts(arg);
+	uart_puts("\n");
 }
 
 void set_handshaking_command(char *arg)

@@ -48,7 +48,13 @@ void execute_command(char *command)
     }
     else if (compare_string_start(command, "setparity") == 0)
     {
-        set_parity_command(command + strlen("setparity"));
+        // Skip "help" and any leading spaces
+        char *command_name = command + 9; // "setparity" has 9 characters
+        while (*command_name == ' ')
+        {
+            command_name++;
+        }
+        set_parity_command(command_name);
     }
     else if (compare_string_start(command, "sethandshaking") == 0)
     {
