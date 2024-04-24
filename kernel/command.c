@@ -68,10 +68,11 @@ void execute_command(char *command)
 
 void help_command(char *command)
 {
+    display_start("AVAILABLE COMMANDS");
+
     // Check if the command is "help" without any argument
     if (compare_string(command, "") == 0)
     {
-        uart_puts("\nAvailable commands:\n");
         uart_puts("help - Show brief information of all commands\n");
         uart_puts("help <command_name> - Show full information of the command\n");
         uart_puts("clear - Clear screen\n");
@@ -129,6 +130,7 @@ void help_command(char *command)
             uart_puts("\nCommand not found.\n");
         }
     }
+    display_end();
 }
 
 void clear_command()
@@ -138,6 +140,7 @@ void clear_command()
 
 void setcolor_command(char *command)
 {
+
     char *token = command;
     char *text_color = (void *)0;
     char *background_color = (void *)0;
@@ -145,7 +148,6 @@ void setcolor_command(char *command)
 
     while (*token != '\0')
     {
-        uart_puts("*");
         // Check if the token starts with "-t"
         if (token[0] == '-' && token[1] == 't')
         {
@@ -210,12 +212,12 @@ void setcolor_command(char *command)
         toUppercase(text_color);
         toUppercase(background_color);
         change_color(text_color, background_color);
-        uart_puts("\nColor has changed!!\n");
+        uart_puts("\nColor has changed!!\n\n");
+
         return;
     }
 
-    uart_puts("\nInvalid command! Please specify at least one color.\n");
-    uart_puts("Loop Done\n");
+    uart_puts("\nInvalid command! Please specify at least one color.\n\n");
 }
 
 void showinfo_command()

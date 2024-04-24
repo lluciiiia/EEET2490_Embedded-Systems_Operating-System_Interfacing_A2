@@ -60,7 +60,6 @@ void mailbox_send(uint32_t msg, unsigned char channel)
 int mbox_call(unsigned int buffer_addr, unsigned char channel)
 {
     // Check Buffer Address
-    uart_sendc('\n');
     uart_puts("Buffer Address: ");
     uart_hex(buffer_addr);
     uart_sendc('\n');
@@ -75,7 +74,7 @@ int mbox_call(unsigned int buffer_addr, unsigned char channel)
     {
         /* is it a valid successful response (Response Code) ? */
         if (mBuf[1] == MBOX_RESPONSE)
-            uart_puts("Got successful response \n\n");
+            uart_puts(">> Got successful response \n\n");
 
         return (mBuf[1] == MBOX_RESPONSE);
     }
@@ -85,6 +84,7 @@ int mbox_call(unsigned int buffer_addr, unsigned char channel)
 
 void get_board_info()
 {
+    display_start("BOARD INFORMATION");
     // Send request for board revision
     mBuf[0] = 11 * 4;       // Length of the buffer
     mBuf[1] = MBOX_REQUEST; // Request code
@@ -112,7 +112,7 @@ void get_board_info()
     else
         (uart_puts("Board Revision is not found."));
 
-    uart_puts("\n");
+    display_end();
 }
 
 void uart_print_mac_address(uint32_t mac_address)

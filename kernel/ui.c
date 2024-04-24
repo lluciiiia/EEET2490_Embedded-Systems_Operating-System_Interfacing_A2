@@ -28,3 +28,15 @@ void display_prompt()
 {
     uart_puts("KimOS> ");
 }
+
+void display_start(char *title)
+{
+    uart_puts("\n\n...........................");
+    uart_puts(title);
+    uart_puts("...........................\n\n");
+}
+
+void display_end()
+{
+    uart_puts("\n\n....................................................................\n\n");
+}

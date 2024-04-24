@@ -3,3 +3,7 @@
 void display_welcome_msg();
 
 void display_prompt();
+
+void display_start(char *title);
+
+void display_end();
