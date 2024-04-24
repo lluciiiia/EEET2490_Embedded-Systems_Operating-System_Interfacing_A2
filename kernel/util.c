@@ -99,4 +99,9 @@ int atoi(const char *str) {
     return sign * result;
 }
 
+char hex_to_ascii(uint8_t value) {
+    // Convert value to ASCII character
+    return value < 10 ? '0' + value : 'A' + (value - 10);
+}
+
 

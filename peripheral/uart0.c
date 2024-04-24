@@ -169,6 +169,14 @@ void uart_dec(int num)
 	uart_puts(str);
 }
 
+void uart_hex_byte(uint8_t byte) {
+    // Print the high nibble
+    uart_sendc(hex_to_ascii(byte >> 4));
+
+    // Print the low nibble
+    uart_sendc(hex_to_ascii(byte & 0x0F));
+}
+
 void set_baud_rate_command(char *arg)
 {
 	unsigned int baud_rate = atoi(arg); // Convert string to integer

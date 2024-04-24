@@ -1,3 +1,5 @@
+#include "./uart0.h"
+
 #define MAX_COMMAND_LENGTH 50
 #define MAX_HISTORY_SIZE 10
 
@@ -14,3 +16,5 @@ char *strcat(char *dest, const char *src);
 unsigned int strlen(const char *str);
 
 int atoi(const char *str);
+
+char hex_to_ascii(uint8_t value);
