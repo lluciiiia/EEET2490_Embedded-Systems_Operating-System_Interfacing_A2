@@ -85,6 +85,7 @@ int mbox_call(unsigned int buffer_addr, unsigned char channel)
 void get_board_info()
 {
     display_start("BOARD INFORMATION");
+    
     // Send request for board revision
     mBuf[0] = 11 * 4;       // Length of the buffer
     mBuf[1] = MBOX_REQUEST; // Request code

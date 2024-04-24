@@ -68,69 +68,75 @@ void execute_command(char *command)
 
 void help_command(char *command)
 {
-    display_start("AVAILABLE COMMANDS");
+    uart_puts("\n\n");
 
     // Check if the command is "help" without any argument
     if (compare_string(command, "") == 0)
     {
-        uart_puts("help - Show brief information of all commands\n");
-        uart_puts("help <command_name> - Show full information of the command\n");
-        uart_puts("clear - Clear screen\n");
-        uart_puts("setcolor -t <text color> -b <background color> - Set text color and/or background color\n");
-        uart_puts("showinfo - Show board revision and board MAC address\n");
-        uart_puts("setbaudrate <baud rates> - Set desired baud rates, including 9600, 19200, 38400, 57600, and 115200 bits per second.\n");
-        uart_puts("setdatabits <the number of data bits> - Set the number of data bits (5, 6, 7, or 8).\n");
-        uart_puts("setstopbits <1 or 2> - Select between one or two stop bits.\n");
-        uart_puts("setparity <none, even or odd> - Configure none, even, and odd parity.\n");
-        uart_puts("sethandshaking - Handshaking control: CTS/RTS handshaking.\n");
+        uart_puts("Command                                                      Description\n");
+        uart_puts("---------------------------------------------------------------------------------------------------------------------\n");
+        uart_puts("help                                                         Show brief information of all commands\n\n");
+        uart_puts("help <command_name>                                          Show full information of the command\n\n");
+        uart_puts("clear                                                        Clear screen\n\n");
+        uart_puts("setcolor -t <text color> -b <background color>               Set text color and/or background color\n");
+        uart_puts("                                                             Colors: black, red, yellow, blue, purple, cyan, white\n\n");
+        uart_puts("showinfo                                                     Show board revision and board MAC address\n\n");
+        uart_puts("setbaudrate <baud rates>                                     Set desired baud rates\n");
+        uart_puts("                                                             Baud rates: 9600, 19200, 38400, 57600, 115200\n\n");
+        uart_puts("setdatabits <the number of data bits>                        Set the number of data bits\n");
+        uart_puts("                                                             Data bits: 5, 6, 7, or 8\n\n");
+        uart_puts("setstopbits <1 or 2>                                         Select between one or two stop bits\n");
+        uart_puts("                                                             Options: 1 or 2\n\n");
+        uart_puts("setparity <none, even or odd>                                Configure parity\n");
+        uart_puts("                                                             Options: none, even, or odd\n\n");
+        uart_puts("sethandshaking                                               Handshaking control: CTS/RTS handshaking\n\n");
     }
     else
     {
         // Check the command name and display full information accordingly
         if (compare_string(command, "help") == 0)
         {
-            uart_puts("\nhelp - Show brief information of all commands\n");
-            uart_puts("help <command_name> - Show full information of the command\n");
+            uart_puts("help - Show brief information of all commands\n");
+            uart_puts("help <command_name> - Show full information of the command\n\n");
         }
         else if (compare_string(command, "clear") == 0)
         {
-            uart_puts("\nclear - Clear screen\n");
+            uart_puts("clear - Clear screen\n\n");
         }
         else if (compare_string(command, "setcolor") == 0)
         {
-            uart_puts("\nsetcolor -t <text color> -b <background color> - Set text color and/or background color of the console.\n");
-            uart_puts("You have following color options: black, red, yellow, blue, purple, cyan, white.\n");
+            uart_puts("setcolor -t <text color> -b <background color> - Set text color and/or background color of the console.\n");
+            uart_puts("You have following color options: black, red, yellow, blue, purple, cyan, white.\n\n");
         }
         else if (compare_string(command, "showinfo") == 0)
         {
-            uart_puts("\nshowinfo - Show board revision and board MAC address\n");
+            uart_puts("showinfo - Show board revision and board MAC address\n\n");
         }
         else if (compare_string(command, "setbaudrate") == 0)
         {
-            uart_puts("\nsetbaudrate <baud rates> - Set desired baud rates, including 9600, 19200, 38400, 57600, and 115200 bits per second.\n");
+            uart_puts("setbaudrate <baud rates> - Set desired baud rates, including 9600, 19200, 38400, 57600, and 115200 bits per second.\n\n");
         }
         else if (compare_string(command, "setdatabits") == 0)
         {
-            uart_puts("\nsetdatabits <the number of data bits> - Set the number of data bits (5, 6, 7, or 8).\n");
+            uart_puts("setdatabits <the number of data bits> - Set the number of data bits (5, 6, 7, or 8).\n\n");
         }
         else if (compare_string(command, "setstopbits") == 0)
         {
-            uart_puts("\nsetstopbits <1 or 2> - Select between one or two stop bits.\n");
+            uart_puts("setstopbits <1 or 2> - Select between one or two stop bits.\n\n");
         }
         else if (compare_string(command, "setparity") == 0)
         {
-            uart_puts("\nsetparity <none, even or odd> - Configure none, even, and odd parity.\n");
+            uart_puts("setparity <none, even or odd> - Configure none, even, and odd parity.\n\n");
         }
         else if (compare_string(command, "sethandshaking") == 0)
         {
-            uart_puts("\nsethandshaking - Handshaking control: CTS/RTS handshaking.\n");
+            uart_puts("sethandshaking - Handshaking control: CTS/RTS handshaking.\n\n");
         }
         else
         {
-            uart_puts("\nCommand not found.\n");
+            uart_puts("Command not found.\n\n");
         }
     }
-    display_end();
 }
 
 void clear_command()
