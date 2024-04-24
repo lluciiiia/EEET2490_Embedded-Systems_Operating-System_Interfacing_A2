@@ -159,4 +159,22 @@ char uart_getc();
 void uart_puts(char *s);
 void uart_hex(unsigned int num);
 void uart_dec(int num);
+
+/* Handle UART Configuration Commands */
+
+// Function to set UART baud rate
+void set_baud_rate_command(char *arg);
+
+// Function to set number of data bits
+void set_data_bits_command(char *arg);
+
+// Function to set number of stop bits
+void set_stop_bits_command(char *arg);
+
+// Function to set parity
+void set_parity_command(char *arg);
+
+// Function to set handshaking control
+void set_handshaking_command(char *arg);
+
 	
