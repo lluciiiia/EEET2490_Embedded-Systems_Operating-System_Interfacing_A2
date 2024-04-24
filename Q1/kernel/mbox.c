@@ -105,7 +105,7 @@ void get_board_info() {
     uart_puts("Board Revision: ");
     uart_hex(mBuf[5]);
     uart_puts("\n");
-    uart_puts("Board Address: ");
+    uart_puts("Board MAC Address: ");
     uart_hex(mBuf[9]);
     uart_puts("\n");
    }
