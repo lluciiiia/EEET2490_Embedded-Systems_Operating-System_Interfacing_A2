@@ -25,7 +25,7 @@ This repository contains the individual assessment 2 for the course EEET2490 Emb
 
 - **`showinfo`**: Show board revision and board MAC address.
 
-- **`setbaudrate <baud rates>`**: Set desired baud rates. Available baud rates: 9600, 19200, 38400, 57600, 115200.
+- **`setbaudrate <baud rates>`**: Set desired baud rates. Baud rates would include 9600, 19200, 38400, 57600, 115200.
 
 - **`setdatabits <the number of data bits>`**: Set the number of data bits. Data bits: 5, 6, 7, or 8.
 
