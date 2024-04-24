@@ -5,7 +5,7 @@
 
 void main()
 {
-    
+
     // intitialize UART
     uart_init();
 
@@ -22,8 +22,8 @@ void main()
         char c = uart_getc();
 
         // Handle different keys
-        if (c == '\n')
-        {                                        // Enter key
+        if (c == '\n') // Enter key
+        {
             command_buffer[buffer_index] = '\0'; // Null-terminate the command buffer
             execute_command(command_buffer);     // Execute the command
             // Reset buffer index for next command

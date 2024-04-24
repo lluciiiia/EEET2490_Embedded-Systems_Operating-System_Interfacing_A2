@@ -48,7 +48,7 @@ void execute_command(char *command)
     }
     else if (compare_string_start(command, "setparity") == 0)
     {
-        // Skip "help" and any leading spaces
+        // Skip "setparity" and any leading spaces
         char *command_name = command + 9; // "setparity" has 9 characters
         while (*command_name == ' ')
         {

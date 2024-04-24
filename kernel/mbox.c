@@ -85,7 +85,6 @@ int mbox_call(unsigned int buffer_addr, unsigned char channel)
 
 void get_board_info()
 {
-
     // Send request for board revision
     mBuf[0] = 11 * 4;       // Length of the buffer
     mBuf[1] = MBOX_REQUEST; // Request code
@@ -116,7 +115,8 @@ void get_board_info()
     uart_puts("\n");
 }
 
-void uart_print_mac_address(uint32_t mac_address) {
+void uart_print_mac_address(uint32_t mac_address)
+{
     // Extract each byte of the MAC address
     uint8_t byte1 = (mac_address >> 24) & 0xFF;
     uint8_t byte2 = (mac_address >> 16) & 0xFF;
@@ -132,13 +132,3 @@ void uart_print_mac_address(uint32_t mac_address) {
     uart_sendc(':');
     uart_hex_byte(byte4);
 }
-
-
-
-
-
-
-
-
-
-
