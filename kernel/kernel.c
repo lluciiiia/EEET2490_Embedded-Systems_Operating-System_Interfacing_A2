@@ -3,6 +3,18 @@
 #include "../header/command.h"
 #include "../header/ui.h"
 
+#define HISTORY_SIZE 10
+
+// Command buffer
+char command_buffer[MAX_COMMAND_LENGTH];
+int buffer_index = 0;
+int auto_complete_index = 0;
+
+// Comman history
+char command_history[HISTORY_SIZE][MAX_COMMAND_LENGTH];
+int history_count = 0;
+int history_index = 0;
+
 // A list of available commands for autocompletion
 const char *command_list[] = {
     "help",
@@ -17,20 +29,9 @@ const char *command_list[] = {
 
 const int num_commands = sizeof(command_list) / sizeof(command_list[0]);
 
-// Command buffer
-char command_buffer[MAX_COMMAND_LENGTH];
-int buffer_index = 0;
-int auto_complete_index = 0;
-
-#define HISTORY_SIZE 10 // Maximum number of commands to store in history
-char command_history[HISTORY_SIZE][MAX_COMMAND_LENGTH];
-int history_count = 0;
-int history_index = 0;
-
 void main()
 {
 
-    // intitialize UART
     uart_init();
 
     display_welcome_msg();
