@@ -200,7 +200,7 @@ void set_baud_rate_command(char *arg)
 	UART0_LCRH = (UART0_LCRH & ~UART0_LCRH_BRK) | UART0_LCRH_WLEN_8BIT;
 	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
 
-		uart_puts("\nIBRD: ");
+	uart_puts("\nIBRD: ");
 	uart_dec(UART0_IBRD);
 	uart_puts("\nFBRD: ");
 	uart_dec(UART0_FBRD);
@@ -237,6 +237,7 @@ void set_data_bits_command(char *arg)
 	default:
 		// Invalid number of data bits
 		uart_puts("\nInvalid number of data bits.\n");
+		display_end();
 		return;
 	}
 
@@ -270,6 +271,7 @@ void set_stop_bits_command(char *arg)
 	default:
 		// Invalid number of stop bits
 		uart_puts("\nInvalid number of stop bits.\n");
+		display_end();
 		return;
 	}
 	uart_puts("\nLDRH after setting stop bits: ");
@@ -302,6 +304,7 @@ void set_parity_command(char *arg)
 	else
 	{
 		uart_puts("\nInvalid parity type. Please use 'none', 'even', or 'odd'.\n");
+		display_end();
 		return;
 	}
 
@@ -318,33 +321,30 @@ void set_handshaking_command(char *arg)
 
 	uart_puts("\nCR before handshaking: ");
 	uart_hex(UART0_CR);
-	// Parse the argument to determine the handshaking type
-	// For example, "none", "hardware", "software"
-	if (compare_string(arg, "none") == 0)
+
+	UART0_LCRH &= ~(UART0_LCRH_FEN);
+
+	if (compare_string(arg, "on") == 0)
 	{
-		// Disable both hardware and software handshaking
 		UART0_CR &= ~(UART0_CR_CTSEN | UART0_CR_RTSEN);
+		UART0_CR |= (UART0_CR_CTSEN | UART0_CR_RTSEN);
 	}
-	else if (compare_string(arg, "hardware") == 0)
+	else if (compare_string(arg, "off") == 0)
 	{
-		// Enable hardware handshaking
-		UART0_CR |= UART0_CR_CTSEN;
-	}
-	else if (compare_string(arg, "software") == 0)
-	{
-		// Enable software handshaking
-		UART0_CR |= UART0_CR_RTSEN;
+		UART0_CR &= ~(UART0_CR_CTSEN | UART0_CR_RTSEN);
 	}
 	else
 	{
-		// Invalid handshaking argument
-		uart_puts("\nInvalid handshaking type. Please use 'none', 'hardware', or 'software'.\n");
+		uart_puts("\nInvalid handshaking type. Please use 'on' or 'off'.\n");
+		display_end();
 		return;
 	}
 
+	UART0_LCRH |= (UART0_LCRH_FEN);
+
 	uart_puts("\nCR after handshaking: ");
 	uart_hex(UART0_CR);
-	uart_puts("\n\nHandshaking control has been set to ");
+	uart_puts("\n\nHandshaking is ");
 	uart_puts(arg);
 	display_end();
 }
