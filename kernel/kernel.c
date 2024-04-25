@@ -3,19 +3,18 @@
 #include "../header/command.h"
 #include "../header/ui.h"
 
-#define HISTORY_SIZE 10
-
 // Command buffer
 char command_buffer[MAX_COMMAND_LENGTH];
 int buffer_index = 0;
-int auto_complete_index = 0;
 
 // Comman history
-char command_history[HISTORY_SIZE][MAX_COMMAND_LENGTH];
+char command_history[MAX_HISTORY_SIZE][MAX_COMMAND_LENGTH];
 int history_count = 0;
 int history_index = 0;
 
-// A list of available commands for autocompletion
+// Command auto completion
+int auto_complete_index = 0;
+
 const char *command_list[] = {
     "help",
     "clear",
@@ -42,7 +41,6 @@ void main()
         // Read each char
         char c = uart_getc();
 
-        // Handle different keys
         if (c == '\n') // Enter key
         {
             // Add the command to history
@@ -112,9 +110,8 @@ void main()
                     history_index++;
             }
         }
-        else
+        else // Regular characters
         {
-            // Regular characters
             // Add the character to the command buffer
             command_buffer[buffer_index++] = c;
             uart_sendc(c); // Echo back to console
@@ -134,12 +131,11 @@ void clear_buffer()
 
 void add_to_history(const char *command)
 {
-
     // Update history count
-    if (history_count >= HISTORY_SIZE)
+    if (history_count >= MAX_HISTORY_SIZE)
     {
         // Shift commands in history to make space for the new command
-        for (int i = HISTORY_SIZE - 1; i > 0; i--)
+        for (int i = MAX_HISTORY_SIZE - 1; i > 0; i--)
         {
             copy_string(command_history[i], command_history[i - 1]);
         }
