@@ -82,6 +82,23 @@ void uart_sendc(char c)
 
 	/* Write our data byte out to the data register */
 	UART0_DR = c;
+
+	if (c == '\b')
+	{
+		do
+		{
+			asm volatile("nop");
+		} while (UART0_FR & UART0_FR_TXFF);
+
+		UART0_DR = ' ';
+
+		do
+		{
+			asm volatile("nop");
+		} while (UART0_FR & UART0_FR_TXFF);
+
+		UART0_DR = 0x08;
+	}
 }
 
 /**

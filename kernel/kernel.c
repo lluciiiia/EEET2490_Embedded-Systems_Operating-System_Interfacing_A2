@@ -31,6 +31,19 @@ void main()
             // Display prompt for next command
             display_prompt();
         }
+        else if (c == 0x08 || c == 0x7F) // Delete or backspace key
+        {
+            // Check if buffer_index is greater than 0 to avoid underflow
+            if (buffer_index > 0)
+            {
+                // Move the cursor back one position
+                uart_sendc(c);
+                
+
+                // Remove the last character from the command buffer
+                buffer_index--;
+            }
+        }
         else
         {
             // Regular characters
