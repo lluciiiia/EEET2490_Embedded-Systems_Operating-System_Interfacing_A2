@@ -17,6 +17,16 @@ const char *command_list[] = {
 
 const int num_commands = sizeof(command_list) / sizeof(command_list[0]);
 
+// Command buffer
+char command_buffer[MAX_COMMAND_LENGTH];
+int buffer_index = 0;
+int auto_complete_index = 0;
+
+#define HISTORY_SIZE 10 // Maximum number of commands to store in history
+char command_history[HISTORY_SIZE][MAX_COMMAND_LENGTH];
+int history_count = 0;
+int history_index = 0;
+
 void main()
 {
 
@@ -26,11 +36,6 @@ void main()
     display_welcome_msg();
     display_prompt();
 
-    // Command buffer
-    char command_buffer[MAX_COMMAND_LENGTH];
-    int buffer_index = 0;
-    int auto_complete_index = 0;
-
     while (1)
     {
         // Read each char
@@ -39,10 +44,18 @@ void main()
         // Handle different keys
         if (c == '\n') // Enter key
         {
-            command_buffer[buffer_index] = '\0'; // Null-terminate the command buffer
-            execute_command(command_buffer);     // Execute the command
+            // Add the command to history
+            add_to_history(command_buffer);
+
+            // Null-terminate the command buffer
+            command_buffer[buffer_index] = '\0';
+
+            // Execute the command
+            execute_command(command_buffer);
+
             // Reset buffer index for next command
             buffer_index = 0;
+
             // Display prompt for next command
             display_prompt();
         }
@@ -62,10 +75,7 @@ void main()
         {
             reset_command_line();
 
-            for (int i = 0; i < MAX_COMMAND_LENGTH; i++)
-            {
-                command_buffer[i] = '\0';
-            }
+            clear_buffer();
 
             buffer_index = 0;
 
@@ -81,6 +91,24 @@ void main()
             if (auto_complete_index == num_commands)
                 auto_complete_index = 0;
         }
+        else if (c == '_') // UP arrow key
+        {
+
+            if (history_index >= 0)
+            {
+                display_history();
+                history_index--;
+            }
+        }
+        else if (c == '+') // DOWN arrow key
+        {
+
+            if (history_index <= history_count - 1)
+            {
+                display_history();
+                history_index++;
+            }
+        }
         else
         {
             // Regular characters
@@ -89,4 +117,53 @@ void main()
             uart_sendc(c); // Echo back to console
         }
     }
+}
+
+void clear_buffer()
+{
+    for (int i = 0; i < MAX_COMMAND_LENGTH; i++)
+    {
+        command_buffer[i] = '\0';
+    }
+    
+    buffer_index = 0;
+}
+
+void add_to_history(const char *command)
+{
+
+    // Update history count
+    if (history_count >= HISTORY_SIZE)
+    {
+        // Shift commands in history to make space for the new command
+        for (int i = HISTORY_SIZE - 1; i > 0; i--)
+        {
+            copy_string(command_history[i], command_history[i - 1]);
+        }
+        copy_string(command_history[history_count], command);
+    }
+    else
+    {
+        copy_string(command_history[history_count], command);
+        history_count++;
+    }
+
+    history_index = history_count - 1;
+}
+
+void display_history()
+{
+    reset_command_line();
+
+    clear_buffer();
+
+    const char *history = command_history[history_index];
+    // copy_string(command_history[0], history);
+
+    for (int i = 0; history[i] != '\0'; i++)
+    {
+        command_buffer[buffer_index++] = history[i];
+    }
+
+    uart_send_string(history);
 }

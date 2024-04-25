@@ -101,6 +101,17 @@ void uart_sendc(char c)
 	}
 }
 
+void uart_send_string(const char *str)
+{
+    // Iterate over each character in the string
+    for (int i = 0; str[i] != '\0'; i++)
+    {
+        // Send each character using uart_sendc
+        uart_sendc(str[i]);
+    }
+}
+
+
 /**
  * Receive a character
  */
