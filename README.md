@@ -33,4 +33,4 @@ This repository contains the individual assessment 2 for the course EEET2490 Emb
 
 - **`setparity <none, even or odd>`**: Configure parity. Options: none, even, or odd.
 
-- **`sethandshaking`**: Handshaking control: CTS/RTS handshaking.
+- **`sethandshaking <on or off>`**: Set handshaking between CTS and RTS.

@@ -95,7 +95,8 @@ void help_command(char *command)
         uart_puts("                                                             Options: 1 or 2\n\n");
         uart_puts("setparity <none, even or odd>                                Configure parity\n");
         uart_puts("                                                             Options: none, even, or odd\n\n");
-        uart_puts("sethandshaking                                               Handshaking control: CTS/RTS handshaking\n\n");
+        uart_puts("sethandshaking                                               Set handshaking between CTS and RTS\n");
+        uart_puts("                                                             Options: on, off\n\n");
     }
     else
     {
@@ -136,7 +137,7 @@ void help_command(char *command)
         }
         else if (compare_string(command, "sethandshaking") == 0)
         {
-            uart_puts("sethandshaking - Handshaking control: CTS/RTS handshaking.\n\n");
+            uart_puts("sethandshaking <on or off> - Set handshaking between CTS and RTS.\n\n");
         }
         else
         {
