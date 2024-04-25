@@ -53,8 +53,10 @@ void main()
             // Execute the command
             execute_command(command_buffer);
 
-            // Reset buffer index for next command
+            // Reset indexes for next command
             buffer_index = 0;
+            history_index = history_count - 1;
+            auto_complete_index = 0;
 
             // Display prompt for next command
             display_prompt();
@@ -93,20 +95,20 @@ void main()
         }
         else if (c == '_') // UP arrow key
         {
-
             if (history_index >= 0)
             {
                 display_history();
-                history_index--;
+                if (history_index != 0)
+                    history_index--;
             }
         }
         else if (c == '+') // DOWN arrow key
         {
-
             if (history_index <= history_count - 1)
             {
                 display_history();
-                history_index++;
+                if (history_index != history_count - 1)
+                    history_index++;
             }
         }
         else
@@ -125,7 +127,7 @@ void clear_buffer()
     {
         command_buffer[i] = '\0';
     }
-    
+
     buffer_index = 0;
 }
 
@@ -158,7 +160,6 @@ void display_history()
     clear_buffer();
 
     const char *history = command_history[history_index];
-    // copy_string(command_history[0], history);
 
     for (int i = 0; history[i] != '\0'; i++)
     {
