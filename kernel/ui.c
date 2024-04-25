@@ -40,3 +40,16 @@ void display_end()
 {
     uart_puts("\n\n.................................................................................................\n\n");
 }
+
+void reset_command_line()
+{
+    // Clear the current line and move cursor to the beginning
+    uart_sendc('\033'); // Escape character
+    uart_sendc('[');    // Control sequence introducer
+    uart_sendc('2');    // Parameter for clearing entire line
+    uart_sendc('K');    // Command to clear entire line
+    uart_sendc('\r');   // Carriage return to move cursor to the beginning of the line
+
+    // Display the prompt for the next command
+    display_prompt();
+}

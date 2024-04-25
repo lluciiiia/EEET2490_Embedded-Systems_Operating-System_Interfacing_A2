@@ -3,7 +3,7 @@
 #include "../header/command.h"
 #include "../header/ui.h"
 
-// Define the list of available commands for autocompletion
+// A list of available commands for autocompletion
 const char *command_list[] = {
     "help",
     "clear",
@@ -60,12 +60,17 @@ void main()
         }
         else if (c == '\t') // TAB key for autocompletion
         {
-            // TODO: Remove the current command in the line before sending the new one
-            // uart_sendc('\033[2K'); // Clear entire line
-            // uart_sendc('\r');
+            reset_command_line();
+
+            for (int i = 0; i < MAX_COMMAND_LENGTH; i++)
+            {
+                command_buffer[i] = '\0';
+            }
+
+            buffer_index = 0;
 
             const char *suggestion = command_list[auto_complete_index];
-            
+
             for (int i = 0; suggestion[i] != '\0'; i++)
             {
                 uart_sendc(suggestion[i]);
