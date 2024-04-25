@@ -12,7 +12,8 @@ This repository contains the individual assessment 2 for the course EEET2490 Emb
 - Displaying Welcome Message and OS Name Prompt
 - Auto-completion with TAB key: Implement logic to suggest completions based on partially entered commands.
 - Command history navigation: Allow users to navigate through previously entered commands using _ and + keys.
-- Implement specific commands as described 
+- Deletion in commands while typing in console: Users can now delete characters in their command input by using the backspace or delete keys. 
+- Implement specific commands as described.
 
 ### Available Commands and Descriptions
 - **`help`**: Show brief information of all commands. 
