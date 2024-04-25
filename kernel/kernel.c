@@ -3,6 +3,20 @@
 #include "../header/command.h"
 #include "../header/ui.h"
 
+// Define the list of available commands for autocompletion
+const char *command_list[] = {
+    "help",
+    "clear",
+    "setcolor",
+    "showinfo",
+    "setbaudrate",
+    "setdatabits",
+    "setstopbits",
+    "setparity",
+    "sethandshaking"};
+
+const int num_commands = sizeof(command_list) / sizeof(command_list[0]);
+
 void main()
 {
 
@@ -15,6 +29,7 @@ void main()
     // Command buffer
     char command_buffer[MAX_COMMAND_LENGTH];
     int buffer_index = 0;
+    int auto_complete_index = 0;
 
     while (1)
     {
@@ -38,11 +53,28 @@ void main()
             {
                 // Move the cursor back one position
                 uart_sendc(c);
-                
 
                 // Remove the last character from the command buffer
                 buffer_index--;
             }
+        }
+        else if (c == '\t') // TAB key for autocompletion
+        {
+            // TODO: Remove the current command in the line before sending the new one
+            // uart_sendc('\033[2K'); // Clear entire line
+            // uart_sendc('\r');
+
+            const char *suggestion = command_list[auto_complete_index];
+            
+            for (int i = 0; suggestion[i] != '\0'; i++)
+            {
+                uart_sendc(suggestion[i]);
+                command_buffer[buffer_index++] = suggestion[i];
+            }
+
+            auto_complete_index++;
+            if (auto_complete_index == num_commands)
+                auto_complete_index = 0;
         }
         else
         {
