@@ -236,8 +236,12 @@ void set_baud_rate_command(char *arg)
 	uart_dec(fbrd);
 	uart_puts("\n\nBaud Rate has been set to ");
 	uart_dec(baud_rate);
+	uart_puts("\n\nBaud rate of the system has been changed. Please manually change the baud rate of your environment.");
 
 	display_end();
+	display_prompt();
+	
+
 
 	while (!(UART0_FR & UART0_FR_TXFE & UART0_FR_BUSY))
 	{
@@ -252,10 +256,6 @@ void set_baud_rate_command(char *arg)
 	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
 
 	UART0_CR |= 0x301;
-
-	while (!(UART0_FR & UART0_FR_TXFE & UART0_FR_BUSY))
-	{
-	}
 
 	uart_init();
 }
