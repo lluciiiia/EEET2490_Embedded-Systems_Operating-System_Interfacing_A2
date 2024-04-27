@@ -85,7 +85,7 @@ int mbox_call(unsigned int buffer_addr, unsigned char channel)
 void get_board_info()
 {
     display_start("BOARD INFORMATION");
-    
+
     // Send request for board revision
     mBuf[0] = 11 * 4;       // Length of the buffer
     mBuf[1] = MBOX_REQUEST; // Request code
@@ -101,14 +101,16 @@ void get_board_info()
     mBuf[5] = 0;                    // Value buffer
     mBuf[10] = MBOX_TAG_LAST;       // End of tags
 
+    char board_info[18];
+
     // Call mailbox_call function
     if (mbox_call(ADDR(mBuf), MBOX_CH_PROP))
     {
         uart_puts("Board Revision: ");
-        uart_hex(mBuf[5]);
+        // uart_print_revision(mBuf[5], board_info);
         uart_puts("\n");
         uart_puts("Board MAC Address: ");
-        uart_print_mac_address(mBuf[9]);
+        uart_print_mac_address(mBuf[5], mBuf[6], board_info);
     }
     else
         (uart_puts("Board Revision is not found."));
@@ -116,20 +118,52 @@ void get_board_info()
     display_end();
 }
 
-void uart_print_mac_address(uint32_t mac_address)
+void uart_print_mac_address(unsigned int mBuf5, unsigned int mBuf6, char *board_info)
 {
-    // Extract each byte of the MAC address
-    uint8_t byte1 = (mac_address >> 24) & 0xFF;
-    uint8_t byte2 = (mac_address >> 16) & 0xFF;
-    uint8_t byte3 = (mac_address >> 8) & 0xFF;
-    uint8_t byte4 = mac_address & 0xFF;
+    unsigned char bytes[6] = {
+        (unsigned char)(mBuf5 & 0xFF),
+        (unsigned char)((mBuf5 >> 8) & 0xFF),
+        (unsigned char)((mBuf5 >> 16) & 0xFF),
+        (unsigned char)((mBuf5 >> 24) & 0xFF),
+        (unsigned char)(mBuf6 & 0xFF),
+        (unsigned char)((mBuf6 >> 8) & 0xFF)};
 
-    // Print the MAC address in the desired format
-    uart_hex_byte(byte1);
-    uart_sendc(':');
-    uart_hex_byte(byte2);
-    uart_sendc(':');
-    uart_hex_byte(byte3);
-    uart_sendc(':');
-    uart_hex_byte(byte4);
+    const char hexChars[] = "0123456789ABCDEF";
+
+    for (int i = 0; i < 6; i++)
+    {
+        board_info[i * 3] = hexChars[bytes[i] >> 4];
+        board_info[i * 3 + 1] = hexChars[bytes[i] & 0x0F];
+        board_info[i * 3 + 2] = (i < 5) ? ':' : '\0';
+    }
+
+    uart_puts(board_info);
+    uart_puts("\n");
+}
+
+void uart_print_revision(unsigned int mBuf5, char *board_info)
+{
+
+    // for (int i = 0; i < 8; i++)
+    // {
+    //     unsigned char nibble = (mBuf5 >> (4 (7 - i))) & 0x0F;
+    //     board_info[i] = nibble < 10 ? nibble + '0' : nibble - 10 + 'A';
+    // }
+    // board_info[8] = '\0';
+
+    // // Initialize the index to 0
+    // int index = 0;
+    // // Loop until the end of the string
+    // while (board_info[index] == '0')
+    // {
+    //     // Move to the next character
+    //     index++;
+    // }
+    // // Shift the remaining characters to the left
+    // for (int i = 0; i < strlen(board_info) - index; i++)
+    // {
+    //     board_info[i] = board_info[i + index];
+    // }
+    // // Add a null character at the end of the string
+    // board_info[strlen(board_info) - index] = '\0';
 }
