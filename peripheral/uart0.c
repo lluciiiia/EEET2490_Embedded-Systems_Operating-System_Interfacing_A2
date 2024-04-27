@@ -1,7 +1,7 @@
 #include "../header/uart0.h"
 
-int DATA_BITS = 8;
-int STOP_BITS = 2;
+int DATA_BITS = 8; // default: 8 data bits
+int STOP_BITS = 2; // default: 2 stop bits
 
 /**
  * Set baud rate and characteristics and map to GPIO
