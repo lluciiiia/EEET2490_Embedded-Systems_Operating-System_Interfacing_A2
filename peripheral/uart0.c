@@ -64,52 +64,7 @@ void uart_init(int ibrd, int fbrd)
 	/* Set length to 8 bit */
 	/* Defaults for other bit are No parity, 1 stop bit */
 
-	UART0_LCRH = 0;
-
-	// Data bits
-	if (DATA_BITS == 5)
-	{
-		UART0_LCRH |= UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
-	}
-	else if (DATA_BITS == 6)
-	{
-		UART0_LCRH |= UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
-	}
-	else if (DATA_BITS == 7)
-	{
-		UART0_LCRH |= UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
-	}
-	else if (DATA_BITS == 8)
-	{
-		UART0_LCRH |= UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
-	}
-
-	// Stop bits
-	if (STOP_BITS == 1)
-	{
-		UART0_LCRH &= ~UART0_LCRH_STP2;
-	}
-	else if (STOP_BITS == 2)
-	{
-		UART0_LCRH &= ~UART0_LCRH_STP2;
-		UART0_LCRH |= UART0_LCRH_STP2;
-	}
-
-	// Stop bits
-	if (PARITY == 0) // None
-	{
-		UART0_LCRH &= ~(UART0_LCRH_PEN | UART0_LCRH_EPS);
-	}
-	else if (PARITY == 1) // Odd
-	{
-		UART0_LCRH |= UART0_LCRH_PEN;
-		UART0_LCRH &= ~UART0_LCRH_EPS;
-	}
-	else if (PARITY == 2) // Even
-	{
-		UART0_LCRH &= ~(UART0_LCRH_PEN | UART0_LCRH_EPS);
-		UART0_LCRH |= UART0_LCRH_PEN | UART0_LCRH_EPS;
-	}
+	UART0_LCRH = set_lcfh_val();
 
 	/* Enable UART0, receive, and transmit */
 	UART0_CR = 0x301; // enable Tx, Rx, FIFO
@@ -465,7 +420,7 @@ void set_parity_command(char *arg)
 	uart_hex(set_lcfh_val());
 	uart_puts("\n\nParity has been set to ");
 	uart_puts(arg);
-	uart_puts("\n\nParity have been changed. Please manually change the Parity of your environment.");
+	uart_puts("\n\nParity has been changed. Please manually change the Parity of your environment.");
 
 	display_end();
 
