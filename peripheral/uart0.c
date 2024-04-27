@@ -11,29 +11,29 @@ void uart_init()
 	UART0_CR = 0x0;
 
 	/* Setup GPIO pins 36 and 37 */
+	// Set GPIO14 and GPIO15 to be pl011 TX/RX which is ALT0    /
+	r = GPFSEL1;
+	r &= ~((7 << 12) | (7 << 15));		// clear bits 17-12 (FSEL15, FSEL14)
+	r |= (0b100 << 12) | (0b100 << 15); // Set value 0b100 (select ALT0: TXD0/RXD0)
+	GPFSEL1 = r;
 
-	/* Set GPIO36 and GPIO37 to be pl011 TX/RX which is ALT0	*/
-	r = GPFSEL3;
-	r &= ~((7 << 18) | (7 << 21));		// clear bits 23-18 (FSEL37, FSEL36)
-	r |= (0b110 << 18) | (0b110 << 21); // Set value 0b110 (select ALT2: TXD0/RXD0)
-	GPFSEL3 = r;
+#ifdef RPI3
+	// enable GPIO 14, 15 /
 
-	/* enable GPIO 36, 37 */
-#ifdef RPI3	   // RPI3
 	GPPUD = 0; // No pull up/down control
 	// Toogle clock to flush GPIO setup
 	r = 150;
 	while (r--)
 	{
 		asm volatile("nop");
-	}								 // waiting 150 cycles
-	GPPUDCLK1 = (1 << 4) | (1 << 5); // enable clock for GPIO 36, 37
+	}								   // waiting 150 cycles
+	GPPUDCLK0 = (1 << 14) | (1 << 15); // enable clock for GPIO 14, 15
 	r = 150;
 	while (r--)
 	{
 		asm volatile("nop");
 	}			   // waiting 150 cycles
-	GPPUDCLK1 = 0; // flush GPIO setup
+	GPPUDCLK0 = 0; // flush GPIO setup
 
 #else // RPI4
 	r = GPIO_PUP_PDN_CNTRL_REG2;
@@ -53,20 +53,20 @@ void uart_init()
 	Integer part register UART0_IBRD  = integer part of Divider
 	Fraction part register UART0_FBRD = (Fractional part * 64) + 0.5 */
 
-	// 19200 baud
-	UART0_IBRD = 156;
-	UART0_FBRD = 17;
+	// 115200 baud
+	UART0_IBRD = 26;
+	UART0_FBRD = 3;
 
 	/* Set up the Line Control Register */
 	/* Enable FIFO */
 	/* Set length to 8 bit */
 	/* Defaults for other bit are No parity, 1 stop bit */
+
 	UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
 
 	/* Enable UART0, receive, and transmit */
 	UART0_CR = 0x301; // enable Tx, Rx, FIFO
 }
-
 /**
  * Send a character
  */
@@ -103,14 +103,13 @@ void uart_sendc(char c)
 
 void uart_send_string(const char *str)
 {
-    // Iterate over each character in the string
-    for (int i = 0; str[i] != '\0'; i++)
-    {
-        // Send each character using uart_sendc
-        uart_sendc(str[i]);
-    }
+	// Iterate over each character in the string
+	for (int i = 0; str[i] != '\0'; i++)
+	{
+		// Send each character using uart_sendc
+		uart_sendc(str[i]);
+	}
 }
-
 
 /**
  * Receive a character
