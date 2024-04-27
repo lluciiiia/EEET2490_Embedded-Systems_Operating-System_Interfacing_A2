@@ -153,30 +153,30 @@ void uart_print_mac_address(unsigned int mBuf5, unsigned int mBuf6)
 
 void uart_print_revision(unsigned int mBuf5)
 {
+    char revision[9]; // Handle the last null terminator
+    int index = 0;
+    int leading_zeros = 0;
 
-    char board_info[18];
-    // for (int i = 0; i < 8; i++)
-    // {
-    //     unsigned char nibble = (mBuf5 >> (4 (7 - i))) & 0x0F;
-    //     board_info[i] = nibble < 10 ? nibble + '0' : nibble - 10 + 'A';
-    // }
-    // board_info[8] = '\0';
+    for (int i = 0; i < 8; i++)
+    {
+        unsigned char half_byte = (mBuf5 >> (4 * (7 - i))) & 0x0F;
+        if (half_byte != 0 || leading_zeros > 1) {
+            revision[index++] = half_byte < 10 ? half_byte + '0' : half_byte - 10 + 'A';
+        } else {
+            leading_zeros++;
+        }
+    }
 
-    // // Initialize the index to 0
-    // int index = 0;
-    // // Loop until the end of the string
-    // while (board_info[index] == '0')
-    // {
-    //     // Move to the next character
-    //     index++;
-    // }
-    // // Shift the remaining characters to the left
-    // for (int i = 0; i < strlen(board_info) - index; i++)
-    // {
-    //     board_info[i] = board_info[i + index];
-    // }
-    // // Add a null character at the end of the string
-    // board_info[strlen(board_info) - index] = '\0';
+    // Ensure at least one digit is printed
+    if (index == 0) {
+        revision[index++] = '0'; 
+    }
+
+    // Null terminator at the end
+    revision[index] = '\0'; 
 
     uart_puts("Board Revision: ");
+    uart_puts(revision);
 }
+
+
