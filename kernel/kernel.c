@@ -32,13 +32,11 @@ void main()
 {
 
     uart_init();
-
     display_welcome_msg();
     display_prompt();
 
     while (1)
     {
-        // Read each char
         char c = uart_getc();
 
         if (c == '\n') // Enter key
