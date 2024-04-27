@@ -90,6 +90,7 @@ void uart_init(int ibrd, int fbrd)
 	}
 	else if (STOP_BITS == 2)
 	{
+		UART0_LCRH &= ~UART0_LCRH_STP2;
 		UART0_LCRH |= UART0_LCRH_STP2;
 	}
 	/* Enable UART0, receive, and transmit */
@@ -299,7 +300,7 @@ void set_data_bits_command(char *arg)
 	}
 
 	// Temporary variable to store the updated LCRH value
-	int lcrh = 0;
+	unsigned lcrh = 0;
 
 	// Update the Line Control Register (LCRH) accordingly
 	switch (data_bits)
@@ -376,7 +377,24 @@ void set_stop_bits_command(char *arg)
 	}
 
 	// Temporary variable to store the updated LCRH value
-	int lcrh = 0;
+	unsigned int lcrh = 0;
+
+	if (DATA_BITS == 5)
+	{
+		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
+	}
+	else if (DATA_BITS == 6)
+	{
+		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
+	}
+	else if (DATA_BITS == 7)
+	{
+		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
+	}
+	else if (DATA_BITS == 8)
+	{
+		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
+	}
 
 	// Update the Line Control Register (LCRH) accordingly
 	switch (stop_bits)
@@ -395,23 +413,6 @@ void set_stop_bits_command(char *arg)
 		uart_puts("\nInvalid number of stop bits.\n");
 		display_end();
 		return;
-	}
-
-	if (DATA_BITS == 5)
-	{
-		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
-	}
-	else if (DATA_BITS == 6)
-	{
-		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
-	}
-	else if (DATA_BITS == 7)
-	{
-		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
-	}
-	else if (DATA_BITS == 8)
-	{
-		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
 	}
 
 	uart_puts("\nLDRH before setting stop bits: ");
