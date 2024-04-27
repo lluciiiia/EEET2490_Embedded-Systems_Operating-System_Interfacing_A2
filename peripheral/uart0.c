@@ -250,7 +250,7 @@ void set_baud_rate_command(char *arg)
 	// Set baud rate and characteristics
 	UART0_IBRD = ibrd;
 	UART0_FBRD = fbrd;
-	UART0_LCRH = (UART0_LCRH & ~UART0_LCRH_BRK) | UART0_LCRH_WLEN_8BIT;
+
 	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
 
 	UART0_CR |= 0x301;
