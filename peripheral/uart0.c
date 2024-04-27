@@ -3,7 +3,7 @@
 /**
  * Set baud rate and characteristics and map to GPIO
  */
-void uart_init(int ibrd, int fbrd)
+void uart_init(int ibrd, int fbrd, int databits)
 {
 	unsigned int r;
 
@@ -60,7 +60,7 @@ void uart_init(int ibrd, int fbrd)
 	/* Set length to 8 bit */
 	/* Defaults for other bit are No parity, 1 stop bit */
 
-	UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
+	UART0_LCRH = databits;
 
 	/* Enable UART0, receive, and transmit */
 	UART0_CR = 0x301; // enable Tx, Rx, FIFO
@@ -254,7 +254,7 @@ void set_baud_rate_command(char *arg)
 
 	UART0_CR |= 0x301;
 
-	uart_init(ibrd, fbrd);
+	uart_init(ibrd, fbrd, UART0_LCRH);
 }
 
 void set_data_bits_command(char *arg)
@@ -297,14 +297,23 @@ void set_data_bits_command(char *arg)
 
 	uart_puts("\n\nThe number of data bits has been set to ");
 	uart_puts(arg);
+	uart_puts("\n\nThe number of data bits has been changed. Please manually change the data bits of your environment.");
+
 	display_end();
+	display_prompt();
 
 	while (!(UART0_FR & UART0_FR_TXFE))
 	{
 	}
 
+	UART0_CR = 0x0;
+
 	// Set the Line Control Register (LCRH) with the temporary value
 	UART0_LCRH = lcrh;
+
+	UART0_CR |= 0x301;
+
+	uart_init(UART0_IBRD, UART0_FBRD, UART0_LCRH);
 }
 
 void set_stop_bits_command(char *arg)
