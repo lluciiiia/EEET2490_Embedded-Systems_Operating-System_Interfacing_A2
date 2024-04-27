@@ -240,10 +240,8 @@ void set_baud_rate_command(char *arg)
 
 	display_end();
 	display_prompt();
-	
 
-
-	while (!(UART0_FR & UART0_FR_TXFE & UART0_FR_BUSY))
+	while (!(UART0_FR & UART0_FR_TXFE))
 	{
 	}
 
@@ -256,8 +254,6 @@ void set_baud_rate_command(char *arg)
 	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
 
 	UART0_CR |= 0x301;
-
-	uart_init();
 }
 
 void set_data_bits_command(char *arg)
