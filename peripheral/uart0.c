@@ -3,7 +3,7 @@
 /**
  * Set baud rate and characteristics and map to GPIO
  */
-void uart_init()
+void uart_init(int ibrd, int fbrd)
 {
 	unsigned int r;
 
@@ -52,9 +52,8 @@ void uart_init()
 	Integer part register UART0_IBRD  = integer part of Divider
 	Fraction part register UART0_FBRD = (Fractional part * 64) + 0.5 */
 
-	// 115200 baud
-	UART0_IBRD = 26;
-	UART0_FBRD = 3;
+	UART0_IBRD = ibrd;
+	UART0_FBRD = fbrd;
 
 	/* Set up the Line Control Register */
 	/* Enable FIFO */
@@ -254,6 +253,8 @@ void set_baud_rate_command(char *arg)
 	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
 
 	UART0_CR |= 0x301;
+
+	uart_init(ibrd, fbrd);
 }
 
 void set_data_bits_command(char *arg)

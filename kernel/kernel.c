@@ -31,8 +31,7 @@ const int num_commands = sizeof(command_list) / sizeof(command_list[0]);
 void main()
 {
 
-
-    uart_init();
+    uart_init(26, 3);
     display_welcome_msg();
     display_prompt();
 
