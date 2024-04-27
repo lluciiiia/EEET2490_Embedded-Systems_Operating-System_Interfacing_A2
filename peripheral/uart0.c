@@ -373,42 +373,31 @@ void set_parity_command(char *arg)
 
 	display_start("Parity Setting");
 
+	int prev_parity = PARITY;
+
 	if (compare_string(arg, "none") == 0)
 	{
-		if (PARITY == 0)
-		{
-			// Same stop bits
-			uart_puts("\nParity remain the same.\n");
-			display_end();
-			return;
-		}
 		PARITY = 0;
 	}
 	else if (compare_string(arg, "odd") == 0)
 	{
-		if (PARITY == 1)
-		{
-			// Same stop bits
-			uart_puts("\nParity remain the same.\n");
-			display_end();
-			return;
-		}
 		PARITY = 1;
 	}
 	else if (compare_string(arg, "even") == 0)
 	{
-		if (PARITY == 2)
-		{
-			// Same stop bits
-			uart_puts("\nParity remain the same.\n");
-			display_end();
-			return;
-		}
 		PARITY = 2;
 	}
 	else
 	{
 		uart_puts("\nInvalid parity type. Please use 'none', 'even', or 'odd'.\n");
+		display_end();
+		return;
+	}
+
+	if (prev_parity == PARITY)
+	{
+		// Same parity
+		uart_puts("\nParity remain the same.\n");
 		display_end();
 		return;
 	}
