@@ -259,33 +259,28 @@ void set_baud_rate_command(char *arg)
 
 void set_data_bits_command(char *arg)
 {
-	do
-	{
-		asm volatile("nop");
-	} while (UART0_FR & UART0_FR_BUSY);
-
 	display_start("Data Bits Setting");
-
-	uart_puts("\nLDRH before setting data bits: ");
-	uart_hex(UART0_LCRH);
 
 	// Get the number of data bits from the argument
 	int data_bits = atoi(arg);
+
+	// Temporary variable to store the updated LCRH value
+	unsigned int lcrh;
 
 	// Update the Line Control Register (LCRH) accordingly
 	switch (data_bits)
 	{
 	case 5:
-		UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
+		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
 		break;
 	case 6:
-		UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
+		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
 		break;
 	case 7:
-		UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
+		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
 		break;
 	case 8:
-		UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
+		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
 		break;
 	default:
 		// Invalid number of data bits
@@ -294,12 +289,22 @@ void set_data_bits_command(char *arg)
 		return;
 	}
 
-	uart_puts("\nLDRH after setting data bits: ");
+	uart_puts("\nLDRH before setting data bits: ");
 	uart_hex(UART0_LCRH);
+
+	uart_puts("\nLDRH after setting data bits: ");
+	uart_hex(lcrh);
 
 	uart_puts("\n\nThe number of data bits has been set to ");
 	uart_puts(arg);
 	display_end();
+
+	while (!(UART0_FR & UART0_FR_TXFE))
+	{
+	}
+
+	// Set the Line Control Register (LCRH) with the temporary value
+	UART0_LCRH = lcrh;
 }
 
 void set_stop_bits_command(char *arg)
