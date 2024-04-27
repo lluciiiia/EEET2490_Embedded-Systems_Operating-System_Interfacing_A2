@@ -346,6 +346,14 @@ void set_stop_bits_command(char *arg)
 		return;
 	}
 
+	if (lcrh == UART0_LCRH)
+	{
+		// Same stop bits
+		uart_puts("\nStop bits remain the same.\n");
+		display_end();
+		return;
+	}
+
 	uart_puts("\nLDRH before setting stop bits: ");
 	uart_hex(UART0_LCRH);
 
