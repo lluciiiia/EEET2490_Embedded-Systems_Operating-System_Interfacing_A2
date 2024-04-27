@@ -421,7 +421,7 @@ void set_stop_bits_command(char *arg)
 	uart_hex(lcrh);
 	uart_puts("\n\nStop bits have been set to ");
 	uart_puts(arg);
-	uart_puts("\n\nStop data bits have been changed. Please manually change the data bits of your environment.");
+	uart_puts("\n\nStop data bits have been changed. Please manually change the stop bits of your environment.");
 
 	display_end();
 
