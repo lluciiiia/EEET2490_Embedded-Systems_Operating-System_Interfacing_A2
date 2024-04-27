@@ -1,8 +1,9 @@
 #include "../header/uart0.h"
 
-int DATA_BITS = 8; // default: 8 data bits
-int STOP_BITS = 2; // default: 2 stop bits
-int PARITY = 0;	   // default: parity - none
+int DATA_BITS = 8;	 // default: 8 data bits
+int STOP_BITS = 2;	 // default: 2 stop bits
+int PARITY = 0;		 // default: parity - none
+int HANDSHAKING = 0; // default: no handshaking
 
 /**
  * Set baud rate and characteristics and map to GPIO
@@ -68,6 +69,15 @@ void uart_init(int ibrd, int fbrd)
 
 	/* Enable UART0, receive, and transmit */
 	UART0_CR = 0x301; // enable Tx, Rx, FIFO
+
+	if (HANDSHAKING)
+	{
+		UART0_CR |= UART0_CR_RTSEN | UART0_CR_CTSEN;
+	}
+	else
+	{
+		UART0_CR &= ~(UART0_CR_RTSEN | UART0_CR_CTSEN);
+	}
 }
 /**
  * Send a character
@@ -432,26 +442,23 @@ void set_parity_command(char *arg)
 
 void set_handshaking_command(char *arg)
 {
-	do
-	{
-		asm volatile("nop");
-	} while (UART0_FR & UART0_FR_BUSY);
 
 	display_start("Handshaking Setting");
 
 	uart_puts("\nCR before handshaking: ");
 	uart_hex(UART0_CR);
 
-	UART0_LCRH &= ~(UART0_LCRH_FEN);
+	unsigned int new_CR = UART0_CR;
 
 	if (compare_string(arg, "on") == 0)
 	{
-		UART0_CR &= ~(UART0_CR_CTSEN | UART0_CR_RTSEN);
-		UART0_CR |= (UART0_CR_CTSEN | UART0_CR_RTSEN);
+		HANDSHAKING = 1;
+		new_CR |= UART0_CR_RTSEN | UART0_CR_CTSEN;
 	}
 	else if (compare_string(arg, "off") == 0)
 	{
-		UART0_CR &= ~(UART0_CR_CTSEN | UART0_CR_RTSEN);
+		HANDSHAKING = 0;
+		new_CR &= ~(UART0_CR_RTSEN | UART0_CR_CTSEN);
 	}
 	else
 	{
@@ -460,13 +467,26 @@ void set_handshaking_command(char *arg)
 		return;
 	}
 
-	UART0_LCRH |= (UART0_LCRH_FEN);
+	if (new_CR == UART0_CR) {
+		// Same handshaking
+		uart_puts("\nHandshaking remain the same.\n");
+		display_end();
+		return;
+	}
 
 	uart_puts("\nCR after handshaking: ");
-	uart_hex(UART0_CR);
+	uart_hex(new_CR);
 	uart_puts("\n\nHandshaking is ");
 	uart_puts(arg);
 	display_end();
+
+	while (!(UART0_FR & UART0_FR_TXFE))
+	{
+	}
+
+	UART0_CR = 0x0;
+
+	reset_uart();
 }
 
 void reset_uart()

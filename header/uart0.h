@@ -6,6 +6,7 @@
 extern int DATA_BITS;
 extern int STOP_BITS;
 extern int PARITY;
+extern int HANDSHAKING;
 
 /* PL011 UART (UART0) registers */
 #define UART0_BASE (MMIO_BASE + 0x201000)
