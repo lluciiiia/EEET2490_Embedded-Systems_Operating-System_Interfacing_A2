@@ -69,19 +69,19 @@ void uart_init(int ibrd, int fbrd)
 	// Data bits
 	if (DATA_BITS == 5)
 	{
-		UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
+		UART0_LCRH |= UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
 	}
 	else if (DATA_BITS == 6)
 	{
-		UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
+		UART0_LCRH |= UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
 	}
 	else if (DATA_BITS == 7)
 	{
-		UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
+		UART0_LCRH |= UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
 	}
 	else if (DATA_BITS == 8)
 	{
-		UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
+		UART0_LCRH |= UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
 	}
 
 	// Stop bits
@@ -317,27 +317,20 @@ void set_data_bits_command(char *arg)
 		return;
 	}
 
-	// Temporary variable to store the updated LCRH value
-	unsigned lcrh = 0;
-
 	// Update the Line Control Register (LCRH) accordingly
 	switch (data_bits)
 	{
 	case 5:
 		DATA_BITS = 5;
-		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
 		break;
 	case 6:
 		DATA_BITS = 6;
-		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
 		break;
 	case 7:
 		DATA_BITS = 7;
-		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
 		break;
 	case 8:
 		DATA_BITS = 8;
-		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
 		break;
 	default:
 		// Invalid number of data bits
@@ -346,21 +339,11 @@ void set_data_bits_command(char *arg)
 		return;
 	}
 
-	// Stop bits
-	if (STOP_BITS == 1)
-	{
-		lcrh &= ~UART0_LCRH_STP2;
-	}
-	else if (STOP_BITS == 2)
-	{
-		lcrh |= UART0_LCRH_STP2;
-	}
-
 	uart_puts("\nLDRH before setting data bits: ");
 	uart_hex(UART0_LCRH);
 
 	uart_puts("\nLDRH after setting data bits: ");
-	uart_hex(lcrh);
+	uart_hex(set_lcfh_val());
 
 	uart_puts("\n\nThe number of data bits has been set to ");
 	uart_puts(arg);
@@ -394,37 +377,14 @@ void set_stop_bits_command(char *arg)
 		return;
 	}
 
-	// Temporary variable to store the updated LCRH value
-	unsigned int lcrh = 0;
-
-	if (DATA_BITS == 5)
-	{
-		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
-	}
-	else if (DATA_BITS == 6)
-	{
-		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
-	}
-	else if (DATA_BITS == 7)
-	{
-		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
-	}
-	else if (DATA_BITS == 8)
-	{
-		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
-	}
-
 	// Update the Line Control Register (LCRH) accordingly
 	switch (stop_bits)
 	{
 	case 1:
 		STOP_BITS = 1;
-		lcrh &= ~UART0_LCRH_STP2;
 		break;
 	case 2:
 		STOP_BITS = 2;
-		lcrh &= ~UART0_LCRH_STP2;
-		lcrh |= UART0_LCRH_STP2;
 		break;
 	default:
 		// Invalid number of stop bits
@@ -437,7 +397,7 @@ void set_stop_bits_command(char *arg)
 	uart_hex(UART0_LCRH);
 
 	uart_puts("\nLDRH after setting stop bits: ");
-	uart_hex(lcrh);
+	uart_hex(set_lcfh_val());
 	uart_puts("\n\nStop bits have been set to ");
 	uart_puts(arg);
 	uart_puts("\n\nStop data bits have been changed. Please manually change the stop bits of your environment.");
@@ -458,9 +418,6 @@ void set_parity_command(char *arg)
 
 	display_start("Parity Setting");
 
-	// Temporary variable to store the updated LCRH value
-	unsigned int lcrh = UART0_LCRH;
-
 	if (compare_string(arg, "none") == 0)
 	{
 		if (PARITY == 0)
@@ -471,7 +428,6 @@ void set_parity_command(char *arg)
 			return;
 		}
 		PARITY = 0;
-		lcrh &= ~(UART0_LCRH_PEN | UART0_LCRH_EPS);
 	}
 	else if (compare_string(arg, "odd") == 0)
 	{
@@ -483,8 +439,6 @@ void set_parity_command(char *arg)
 			return;
 		}
 		PARITY = 1;
-		lcrh |= UART0_LCRH_PEN;
-		lcrh &= ~UART0_LCRH_EPS;
 	}
 	else if (compare_string(arg, "even") == 0)
 	{
@@ -496,7 +450,6 @@ void set_parity_command(char *arg)
 			return;
 		}
 		PARITY = 2;
-		lcrh |= UART0_LCRH_PEN | UART0_LCRH_EPS;
 	}
 	else
 	{
@@ -509,7 +462,7 @@ void set_parity_command(char *arg)
 	uart_hex(UART0_LCRH);
 
 	uart_puts("\nLDRH after setting parity: ");
-	uart_hex(lcrh);
+	uart_hex(set_lcfh_val());
 	uart_puts("\n\nParity has been set to ");
 	uart_puts(arg);
 	uart_puts("\n\nParity have been changed. Please manually change the Parity of your environment.");
@@ -571,4 +524,57 @@ void reset_uart()
 	UART0_CR |= 0x301;
 
 	uart_init(UART0_IBRD, UART0_FBRD);
+}
+
+int set_lcfh_val()
+{
+
+	unsigned int lcfh = 0;
+
+	// Data bits
+	if (DATA_BITS == 5)
+	{
+		lcfh |= UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
+	}
+	else if (DATA_BITS == 6)
+	{
+		lcfh |= UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
+	}
+	else if (DATA_BITS == 7)
+	{
+		lcfh |= UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
+	}
+	else if (DATA_BITS == 8)
+	{
+		lcfh |= UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
+	}
+
+	// Stop bits
+	if (STOP_BITS == 1)
+	{
+		lcfh &= ~UART0_LCRH_STP2;
+	}
+	else if (STOP_BITS == 2)
+	{
+		lcfh &= ~UART0_LCRH_STP2;
+		lcfh |= UART0_LCRH_STP2;
+	}
+
+	// Stop bits
+	if (PARITY == 0) // None
+	{
+		lcfh &= ~(UART0_LCRH_PEN | UART0_LCRH_EPS);
+	}
+	else if (PARITY == 1) // Odd
+	{
+		lcfh |= UART0_LCRH_PEN;
+		lcfh &= ~UART0_LCRH_EPS;
+	}
+	else if (PARITY == 2) // Even
+	{
+		lcfh &= ~(UART0_LCRH_PEN | UART0_LCRH_EPS);
+		lcfh |= UART0_LCRH_PEN | UART0_LCRH_EPS;
+	}
+
+	return lcfh;
 }
