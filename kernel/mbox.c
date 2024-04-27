@@ -70,7 +70,7 @@ int mbox_call(unsigned int buffer_addr, unsigned char channel)
         /* is it a valid successful response (Response Code) ? */
         if (mBuf[1] != MBOX_RESPONSE)
             uart_puts(">> NOT successful response \n\n");
-        
+
         return (mBuf[1] == MBOX_RESPONSE);
     }
 
@@ -92,13 +92,11 @@ void get_mac_address_info()
     mBuf[6] = 0;             // Tag: Get board MAC address
     mBuf[7] = MBOX_TAG_LAST; // End of tags
 
-    char board_info[18];
-
     // Call mailbox_call function
     if (mbox_call(ADDR(mBuf), MBOX_CH_PROP))
     {
-        uart_puts("Board MAC Address: ");
-        uart_print_mac_address(mBuf[5], mBuf[6], board_info);
+
+        uart_print_mac_address(mBuf[5], mBuf[6]);
     }
     else
         (uart_puts("Board MAC address is not found."));
@@ -119,20 +117,19 @@ void get_revision_info()
     mBuf[6] = 0;             // Tag: Get board MAC address
     mBuf[7] = MBOX_TAG_LAST; // End of tags
 
-    char board_info[18];
-
     // Call mailbox_call function
     if (mbox_call(ADDR(mBuf), MBOX_CH_PROP))
     {
-        uart_puts("Board Revision: ");
-        // uart_print_revision(mBuf[5], board_info);
+        uart_print_revision(mBuf[5]);
     }
     else
         (uart_puts("Board Revision is not found."));
 }
 
-void uart_print_mac_address(unsigned int mBuf5, unsigned int mBuf6, char *board_info)
+void uart_print_mac_address(unsigned int mBuf5, unsigned int mBuf6)
 {
+    char mac_address[18];
+
     unsigned char bytes[6] = {
         (unsigned char)(mBuf5 & 0xFF),
         (unsigned char)((mBuf5 >> 8) & 0xFF),
@@ -145,17 +142,19 @@ void uart_print_mac_address(unsigned int mBuf5, unsigned int mBuf6, char *board_
 
     for (int i = 0; i < 6; i++)
     {
-        board_info[i * 3] = hexChars[bytes[i] >> 4];
-        board_info[i * 3 + 1] = hexChars[bytes[i] & 0x0F];
-        board_info[i * 3 + 2] = (i < 5) ? ':' : '\0';
+        mac_address[i * 3] = hexChars[bytes[i] >> 4];
+        mac_address[i * 3 + 1] = hexChars[bytes[i] & 0x0F];
+        mac_address[i * 3 + 2] = (i < 5) ? ':' : '\0';
     }
 
-    uart_puts(board_info);
+    uart_puts("Board MAC Address: ");
+    uart_puts(mac_address);
 }
 
-void uart_print_revision(unsigned int mBuf5, char *board_info)
+void uart_print_revision(unsigned int mBuf5)
 {
 
+    char board_info[18];
     // for (int i = 0; i < 8; i++)
     // {
     //     unsigned char nibble = (mBuf5 >> (4 (7 - i))) & 0x0F;
@@ -178,4 +177,6 @@ void uart_print_revision(unsigned int mBuf5, char *board_info)
     // }
     // // Add a null character at the end of the string
     // board_info[strlen(board_info) - index] = '\0';
+
+    uart_puts("Board Revision: ");
 }
