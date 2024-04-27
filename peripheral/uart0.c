@@ -207,11 +207,6 @@ void uart_hex_byte(uint8_t byte)
 void set_baud_rate_command(char *arg)
 {
 
-	do
-	{
-		asm volatile("nop");
-	} while (UART0_FR & UART0_FR_BUSY);
-
 	display_start("Baud Rate Setting");
 	unsigned int baud_rate = atoi(arg); // Convert string to integer
 
@@ -224,28 +219,45 @@ void set_baud_rate_command(char *arg)
 	}
 
 	uart_puts("\nIBRD before setting: ");
-	uart_hex(UART0_IBRD);
+	uart_dec(UART0_IBRD);
 	uart_puts("\nFBRD before setting: ");
-	uart_hex(UART0_FBRD);
+	uart_dec(UART0_FBRD);
 	uart_puts("\n\n");
 
 	// Calculate the baud rate divisor
 	float BAUDDIVs = UART0_CLOCK_FREQ / (16.0f * baud_rate);
 
-	// Set baud rate and characteristics
-	UART0_IBRD = (int)BAUDDIVs;
-	UART0_FBRD = (int)(((BAUDDIVs - UART0_IBRD) * 64) + 0.5);
+	int ibrd = (int)BAUDDIVs;
+	int fbrd = (int)(((BAUDDIVs - ibrd) * 64) + 0.5);
 
+	uart_puts("\nIBRD after setting: ");
+	uart_dec(ibrd);
+	uart_puts("\nFBRD after setting: ");
+	uart_dec(fbrd);
+	uart_puts("\n\nBaud Rate has been set to ");
+	uart_dec(baud_rate);
+
+	display_end();
+
+	while (!(UART0_FR & UART0_FR_TXFE & UART0_FR_BUSY))
+	{
+	}
+
+	UART0_CR = 0x0;
+
+	// Set baud rate and characteristics
+	UART0_IBRD = ibrd;
+	UART0_FBRD = fbrd;
 	UART0_LCRH = (UART0_LCRH & ~UART0_LCRH_BRK) | UART0_LCRH_WLEN_8BIT;
 	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
 
-	uart_puts("\nIBRD after setting: ");
-	uart_hex(UART0_IBRD);
-	uart_puts("\nFBRD after setting: ");
-	uart_hex(UART0_FBRD);
-	uart_puts("\n\nBaud Rate has been set to ");
-	uart_hex(baud_rate);
-	display_end();
+	UART0_CR |= 0x301;
+
+	while (!(UART0_FR & UART0_FR_TXFE & UART0_FR_BUSY))
+	{
+	}
+
+	uart_init();
 }
 
 void set_data_bits_command(char *arg)
