@@ -221,17 +221,25 @@ void set_baud_rate_command(char *arg)
 		return;
 	}
 
-	uart_puts("\nIBRD before setting: ");
-	uart_dec(UART0_IBRD);
-	uart_puts("\nFBRD before setting: ");
-	uart_dec(UART0_FBRD);
-	uart_puts("\n\n");
-
 	// Calculate the baud rate divisor
 	float BAUDDIVs = UART0_CLOCK_FREQ / (16.0f * baud_rate);
 
 	int ibrd = (int)BAUDDIVs;
 	int fbrd = (int)(((BAUDDIVs - ibrd) * 64) + 0.5);
+
+	if (ibrd == UART0_IBRD && fbrd == UART0_FBRD)
+	{
+		// Same baud rates
+		uart_puts("\nBaud rates remain the same.\n");
+		display_end();
+		return;
+	}
+
+	uart_puts("\nIBRD before setting: ");
+	uart_dec(UART0_IBRD);
+	uart_puts("\nFBRD before setting: ");
+	uart_dec(UART0_FBRD);
+	uart_puts("\n\n");
 
 	uart_puts("\nIBRD after setting: ");
 	uart_dec(ibrd);
