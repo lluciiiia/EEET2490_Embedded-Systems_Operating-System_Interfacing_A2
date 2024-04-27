@@ -250,11 +250,7 @@ void set_baud_rate_command(char *arg)
 	UART0_IBRD = ibrd;
 	UART0_FBRD = fbrd;
 
-	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
-
-	UART0_CR |= 0x301;
-
-	uart_init(ibrd, fbrd, UART0_LCRH);
+	reset_uart();
 }
 
 void set_data_bits_command(char *arg)
@@ -265,7 +261,7 @@ void set_data_bits_command(char *arg)
 	int data_bits = atoi(arg);
 
 	// Temporary variable to store the updated LCRH value
-	unsigned int lcrh;
+	int lcrh;
 
 	// Update the Line Control Register (LCRH) accordingly
 	switch (data_bits)
@@ -289,7 +285,8 @@ void set_data_bits_command(char *arg)
 		return;
 	}
 
-	if (lcrh == UART0_LCRH) {
+	if (lcrh == UART0_LCRH)
+	{
 		// Same number of data bits
 		uart_puts("\nData bits remain the same.\n");
 		display_end();
@@ -318,36 +315,29 @@ void set_data_bits_command(char *arg)
 	// Set the Line Control Register (LCRH) with the temporary value
 	UART0_LCRH = lcrh;
 
-	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
-
-	UART0_CR |= 0x301;
-
-	uart_init(UART0_IBRD, UART0_FBRD, UART0_LCRH);
+	reset_uart();
 }
 
 void set_stop_bits_command(char *arg)
 {
-	do
-	{
-		asm volatile("nop");
-	} while (UART0_FR & UART0_FR_BUSY);
 
 	display_start("Stop Bits Setting");
 
-	uart_puts("\nLDRH before setting stop bits: ");
-	uart_hex(UART0_LCRH);
 	// Get the number of stop bits from the argument
 	int stop_bits = atoi(arg);
 
-	UART0_LCRH &= ~UART0_LCRH_STP2;
+	// Temporary variable to store the updated LCRH value
+	int lcrh;
 
 	// Update the Line Control Register (LCRH) accordingly
 	switch (stop_bits)
 	{
 	case 1:
+		lcrh &= ~UART0_LCRH_STP2;
 		break;
 	case 2:
-		UART0_LCRH |= UART0_LCRH_STP2;
+		lcrh &= ~UART0_LCRH_STP2;
+		lcrh |= UART0_LCRH_STP2;
 		break;
 	default:
 		// Invalid number of stop bits
@@ -355,11 +345,29 @@ void set_stop_bits_command(char *arg)
 		display_end();
 		return;
 	}
-	uart_puts("\nLDRH after setting stop bits: ");
+
+	uart_puts("\nLDRH before setting stop bits: ");
 	uart_hex(UART0_LCRH);
+
+	uart_puts("\nLDRH after setting stop bits: ");
+	uart_hex(lcrh);
 	uart_puts("\n\nStop bits have been set to ");
 	uart_puts(arg);
+	uart_puts("\n\nStop data bits have been changed. Please manually change the data bits of your environment.");
+
 	display_end();
+	display_prompt();
+
+	while (!(UART0_FR & UART0_FR_TXFE))
+	{
+	}
+
+	UART0_CR = 0x0;
+
+	// Set the Line Control Register (LCRH) with the temporary value
+	UART0_LCRH = lcrh;
+
+	reset_uart();
 }
 
 void set_parity_command(char *arg)
@@ -438,4 +446,13 @@ void set_handshaking_command(char *arg)
 	uart_puts("\n\nHandshaking is ");
 	uart_puts(arg);
 	display_end();
+}
+
+void reset_uart()
+{
+	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
+
+	UART0_CR |= 0x301;
+
+	uart_init(UART0_IBRD, UART0_FBRD, UART0_LCRH);
 }
