@@ -2,6 +2,7 @@
 
 int DATA_BITS = 8; // default: 8 data bits
 int STOP_BITS = 2; // default: 2 stop bits
+int PARITY = 0;	   // default: parity - none
 
 /**
  * Set baud rate and characteristics and map to GPIO
@@ -93,6 +94,23 @@ void uart_init(int ibrd, int fbrd)
 		UART0_LCRH &= ~UART0_LCRH_STP2;
 		UART0_LCRH |= UART0_LCRH_STP2;
 	}
+
+	// Stop bits
+	if (PARITY == 0) // None
+	{
+		UART0_LCRH &= ~(UART0_LCRH_PEN | UART0_LCRH_EPS);
+	}
+	else if (PARITY == 1) // Odd
+	{
+		UART0_LCRH |= UART0_LCRH_PEN;
+		UART0_LCRH &= ~UART0_LCRH_EPS;
+	}
+	else if (PARITY == 2) // Even
+	{
+		UART0_LCRH &= ~(UART0_LCRH_PEN | UART0_LCRH_EPS);
+		UART0_LCRH |= UART0_LCRH_PEN | UART0_LCRH_EPS;
+	}
+
 	/* Enable UART0, receive, and transmit */
 	UART0_CR = 0x301; // enable Tx, Rx, FIFO
 }
@@ -437,28 +455,48 @@ void set_stop_bits_command(char *arg)
 
 void set_parity_command(char *arg)
 {
-	do
-	{
-		asm volatile("nop");
-	} while (UART0_FR & UART0_FR_BUSY);
 
 	display_start("Parity Setting");
 
-	uart_puts("\nLDRH before setting parity: ");
-	uart_hex(UART0_LCRH);
+	// Temporary variable to store the updated LCRH value
+	unsigned int lcrh = UART0_LCRH;
 
 	if (compare_string(arg, "none") == 0)
 	{
-		UART0_LCRH &= ~(UART0_LCRH_PEN | UART0_LCRH_EPS);
-	}
-	else if (compare_string(arg, "even") == 0)
-	{
-		UART0_LCRH |= UART0_LCRH_PEN | UART0_LCRH_EPS;
+		if (PARITY == 0)
+		{
+			// Same stop bits
+			uart_puts("\nParity remain the same.\n");
+			display_end();
+			return;
+		}
+		PARITY = 0;
+		lcrh &= ~(UART0_LCRH_PEN | UART0_LCRH_EPS);
 	}
 	else if (compare_string(arg, "odd") == 0)
 	{
-		UART0_LCRH |= UART0_LCRH_PEN;
-		UART0_LCRH &= ~UART0_LCRH_EPS;
+		if (PARITY == 1)
+		{
+			// Same stop bits
+			uart_puts("\nParity remain the same.\n");
+			display_end();
+			return;
+		}
+		PARITY = 1;
+		lcrh |= UART0_LCRH_PEN;
+		lcrh &= ~UART0_LCRH_EPS;
+	}
+	else if (compare_string(arg, "even") == 0)
+	{
+		if (PARITY == 2)
+		{
+			// Same stop bits
+			uart_puts("\nParity remain the same.\n");
+			display_end();
+			return;
+		}
+		PARITY = 2;
+		lcrh |= UART0_LCRH_PEN | UART0_LCRH_EPS;
 	}
 	else
 	{
@@ -467,11 +505,24 @@ void set_parity_command(char *arg)
 		return;
 	}
 
-	uart_puts("\nLDRH after setting parity: ");
+	uart_puts("\nLDRH before setting parity: ");
 	uart_hex(UART0_LCRH);
+
+	uart_puts("\nLDRH after setting parity: ");
+	uart_hex(lcrh);
 	uart_puts("\n\nParity has been set to ");
 	uart_puts(arg);
+	uart_puts("\n\nParity have been changed. Please manually change the Parity of your environment.");
+
 	display_end();
+
+	while (!(UART0_FR & UART0_FR_TXFE))
+	{
+	}
+
+	UART0_CR = 0x0;
+
+	reset_uart();
 }
 
 void set_handshaking_command(char *arg)
