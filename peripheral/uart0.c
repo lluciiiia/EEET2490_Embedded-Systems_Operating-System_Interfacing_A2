@@ -290,7 +290,7 @@ void set_data_bits_command(char *arg)
 	}
 
 	if (lcrh == UART0_LCRH) {
-		// Invalid number of data bits
+		// Same number of data bits
 		uart_puts("\nData bits remain the same.\n");
 		display_end();
 		return;
