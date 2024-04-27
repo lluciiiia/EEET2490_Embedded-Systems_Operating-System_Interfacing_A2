@@ -206,18 +206,31 @@ void uart_hex_byte(uint8_t byte)
 
 void set_baud_rate_command(char *arg)
 {
+
+	do
+	{
+		asm volatile("nop");
+	} while (UART0_FR & UART0_FR_BUSY);
+
 	display_start("Baud Rate Setting");
 	unsigned int baud_rate = atoi(arg); // Convert string to integer
 
+	if (baud_rate <= 0)
+	{
+		// Invalid number of data bits
+		uart_puts("\nInvalid number of data bits. Please input baud rates, higher than 0.");
+		display_end();
+		return;
+	}
+
+	uart_puts("\nIBRD before setting: ");
+	uart_dec(UART0_IBRD);
+	uart_puts("\nFBRD before setting: ");
+	uart_dec(UART0_FBRD);
+	uart_puts("\n\n");
+
 	// Calculate the baud rate divisor
 	float BAUDDIVs = UART0_CLOCK_FREQ / (16.0f * baud_rate);
-
-	// Set the integer and fractional parts of the baud rate divisor
-	UART0_IBRD = (int)BAUDDIVs;
-	UART0_FBRD = (int)((BAUDDIVs - UART0_IBRD) * 64 + 0.5);
-
-	UART0_CR &= ~UART0_CR_UARTEN; // Disable UART0
-	UART0_CR = 0x0;				  // Clear the control register
 
 	// Set baud rate and characteristics
 	UART0_IBRD = (int)BAUDDIVs;
@@ -226,9 +239,9 @@ void set_baud_rate_command(char *arg)
 	UART0_LCRH = (UART0_LCRH & ~UART0_LCRH_BRK) | UART0_LCRH_WLEN_8BIT;
 	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
 
-	uart_puts("\nIBRD: ");
+	uart_puts("\nIBRD after setting: ");
 	uart_dec(UART0_IBRD);
-	uart_puts("\nFBRD: ");
+	uart_puts("\nFBRD after setting: ");
 	uart_dec(UART0_FBRD);
 	uart_puts("\n\nBaud Rate has been set to ");
 	uart_dec(baud_rate);
@@ -237,6 +250,11 @@ void set_baud_rate_command(char *arg)
 
 void set_data_bits_command(char *arg)
 {
+	do
+	{
+		asm volatile("nop");
+	} while (UART0_FR & UART0_FR_BUSY);
+
 	display_start("Data Bits Setting");
 
 	uart_puts("\nLDRH before setting data bits: ");
@@ -277,6 +295,11 @@ void set_data_bits_command(char *arg)
 
 void set_stop_bits_command(char *arg)
 {
+	do
+	{
+		asm volatile("nop");
+	} while (UART0_FR & UART0_FR_BUSY);
+
 	display_start("Stop Bits Setting");
 
 	uart_puts("\nLDRH before setting stop bits: ");
@@ -309,6 +332,11 @@ void set_stop_bits_command(char *arg)
 
 void set_parity_command(char *arg)
 {
+	do
+	{
+		asm volatile("nop");
+	} while (UART0_FR & UART0_FR_BUSY);
+
 	display_start("Parity Setting");
 
 	uart_puts("\nLDRH before setting parity: ");
@@ -343,6 +371,11 @@ void set_parity_command(char *arg)
 
 void set_handshaking_command(char *arg)
 {
+	do
+	{
+		asm volatile("nop");
+	} while (UART0_FR & UART0_FR_BUSY);
+
 	display_start("Handshaking Setting");
 
 	uart_puts("\nCR before handshaking: ");

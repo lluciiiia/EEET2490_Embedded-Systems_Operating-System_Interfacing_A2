@@ -24,4 +24,4 @@ clean:
 
 # Run emulation with QEMU
 run: 
-	qemu-system-aarch64 -M raspi4 -kernel ./object/kernel8.img -serial stdio
+	qemu-system-aarch64 -M raspi3 -kernel ./object/kernel8.img -serial stdio
