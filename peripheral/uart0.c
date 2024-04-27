@@ -272,7 +272,7 @@ void set_baud_rate_command(char *arg)
 	UART0_IBRD = ibrd;
 	UART0_FBRD = fbrd;
 
-	reset_uart();
+	uart_init(UART0_IBRD, UART0_FBRD);
 }
 
 void set_data_bits_command(char *arg)
@@ -331,7 +331,7 @@ void set_data_bits_command(char *arg)
 
 	UART0_CR = 0x0;
 
-	reset_uart();
+	uart_init(UART0_IBRD, UART0_FBRD);
 }
 
 void set_stop_bits_command(char *arg)
@@ -383,7 +383,7 @@ void set_stop_bits_command(char *arg)
 
 	UART0_CR = 0x0;
 
-	reset_uart();
+	uart_init(UART0_IBRD, UART0_FBRD);
 }
 
 void set_parity_command(char *arg)
@@ -437,7 +437,7 @@ void set_parity_command(char *arg)
 
 	UART0_CR = 0x0;
 
-	reset_uart();
+	uart_init(UART0_IBRD, UART0_FBRD);
 }
 
 void set_handshaking_command(char *arg)
@@ -487,15 +487,6 @@ void set_handshaking_command(char *arg)
 	}
 
 	UART0_CR = 0x0;
-
-	reset_uart();
-}
-
-void reset_uart()
-{
-	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
-
-	UART0_CR |= 0x301;
 
 	uart_init(UART0_IBRD, UART0_FBRD);
 }
