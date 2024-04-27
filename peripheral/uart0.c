@@ -311,6 +311,8 @@ void set_data_bits_command(char *arg)
 	// Set the Line Control Register (LCRH) with the temporary value
 	UART0_LCRH = lcrh;
 
+	UART0_CR = UART0_CR_UARTEN | UART0_CR_TXE | UART0_CR_RXE; // Enable UART0, Tx, Rx
+
 	UART0_CR |= 0x301;
 
 	uart_init(UART0_IBRD, UART0_FBRD, UART0_LCRH);
