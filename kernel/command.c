@@ -234,5 +234,9 @@ void setcolor_command(char *command)
 
 void showinfo_command()
 {
-    get_board_info();
+    display_start("BOARD INFORMATION");
+    get_mac_address_info();
+    uart_puts("\n\n");
+    get_revision_info();
+    display_end();
 }

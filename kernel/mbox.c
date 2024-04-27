@@ -59,11 +59,6 @@ void mailbox_send(uint32_t msg, unsigned char channel)
  */
 int mbox_call(unsigned int buffer_addr, unsigned char channel)
 {
-    // Check Buffer Address
-    uart_puts("Buffer Address: ");
-    uart_hex(buffer_addr);
-    uart_sendc('\n');
-
     // Prepare Data (address of Message Buffer)
     unsigned int msg = (buffer_addr & ~0xF) | (channel & 0xF);
     mailbox_send(msg, channel);
@@ -73,33 +68,56 @@ int mbox_call(unsigned int buffer_addr, unsigned char channel)
     if (msg == mailbox_read(channel))
     {
         /* is it a valid successful response (Response Code) ? */
-        if (mBuf[1] == MBOX_RESPONSE)
-            uart_puts(">> Got successful response \n\n");
-
+        if (mBuf[1] != MBOX_RESPONSE)
+            uart_puts(">> NOT successful response \n\n");
+        
         return (mBuf[1] == MBOX_RESPONSE);
     }
 
     return 0;
 }
 
-void get_board_info()
+void get_mac_address_info()
 {
-    display_start("BOARD INFORMATION");
 
     // Send request for board revision
-    mBuf[0] = 11 * 4;       // Length of the buffer
+    mBuf[0] = 8 * 4;        // Length of the buffer
     mBuf[1] = MBOX_REQUEST; // Request code
 
-    mBuf[2] = MBOX_TAG_REVISION; // Tag: Get board revision
-    mBuf[3] = 4;                 // Buffer size
+    mBuf[2] = MBOX_TAG_MAC_ADDRESS; // Tag: Get board MAC address
+    mBuf[3] = 8;                    // Buffer size
+    mBuf[4] = 0;                    // Request/response code
+    mBuf[5] = 0;                    // Value buffer
+
+    mBuf[6] = 0;             // Tag: Get board MAC address
+    mBuf[7] = MBOX_TAG_LAST; // End of tags
+
+    char board_info[18];
+
+    // Call mailbox_call function
+    if (mbox_call(ADDR(mBuf), MBOX_CH_PROP))
+    {
+        uart_puts("Board MAC Address: ");
+        uart_print_mac_address(mBuf[5], mBuf[6], board_info);
+    }
+    else
+        (uart_puts("Board MAC address is not found."));
+}
+
+void get_revision_info()
+{
+
+    // Send request for board revision
+    mBuf[0] = 8 * 4;        // Length of the buffer
+    mBuf[1] = MBOX_REQUEST; // Request code
+
+    mBuf[2] = MBOX_TAG_REVISION; // Tag: Get board tag of revision
+    mBuf[3] = 8;                 // Buffer size
     mBuf[4] = 0;                 // Request/response code
     mBuf[5] = 0;                 // Value buffer
 
-    mBuf[6] = MBOX_TAG_MAC_ADDRESS; // Tag: Get board MAC address
-    mBuf[3] = 4;                    // Buffer size
-    mBuf[4] = 0;                    // Request/response code
-    mBuf[5] = 0;                    // Value buffer
-    mBuf[10] = MBOX_TAG_LAST;       // End of tags
+    mBuf[6] = 0;             // Tag: Get board MAC address
+    mBuf[7] = MBOX_TAG_LAST; // End of tags
 
     char board_info[18];
 
@@ -108,14 +126,9 @@ void get_board_info()
     {
         uart_puts("Board Revision: ");
         // uart_print_revision(mBuf[5], board_info);
-        uart_puts("\n");
-        uart_puts("Board MAC Address: ");
-        uart_print_mac_address(mBuf[5], mBuf[6], board_info);
     }
     else
         (uart_puts("Board Revision is not found."));
-
-    display_end();
 }
 
 void uart_print_mac_address(unsigned int mBuf5, unsigned int mBuf6, char *board_info)
@@ -138,7 +151,6 @@ void uart_print_mac_address(unsigned int mBuf5, unsigned int mBuf6, char *board_
     }
 
     uart_puts(board_info);
-    uart_puts("\n");
 }
 
 void uart_print_revision(unsigned int mBuf5, char *board_info)
