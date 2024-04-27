@@ -10,7 +10,6 @@ void uart_init()
 	/* Turn off UART0 */
 	UART0_CR = 0x0;
 
-	/* Setup GPIO pins 36 and 37 */
 	// Set GPIO14 and GPIO15 to be pl011 TX/RX which is ALT0    /
 	r = GPFSEL1;
 	r &= ~((7 << 12) | (7 << 15));		// clear bits 17-12 (FSEL15, FSEL14)
@@ -36,9 +35,9 @@ void uart_init()
 	GPPUDCLK0 = 0; // flush GPIO setup
 
 #else // RPI4
-	r = GPIO_PUP_PDN_CNTRL_REG2;
-	r &= ~((3 << 8) | (3 << 10)); // No resistor is selected for GPIO 36, 37
-	GPIO_PUP_PDN_CNTRL_REG2 = r;
+	r = GPIO_PUP_PDN_CNTRL_REG0;
+	r &= ~((0 << 28) | (0 << 30)); // No resistor is selected for GPIO 14, 15
+	GPIO_PUP_PDN_CNTRL_REG0 = r;
 #endif
 
 	/* Mask all interrupts. */
