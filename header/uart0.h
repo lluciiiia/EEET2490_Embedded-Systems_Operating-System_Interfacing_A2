@@ -3,6 +3,8 @@
 #define MAX_COMMAND_LENGTH 50
 #define MAX_HISTORY_SIZE 10
 #define UART0_CLOCK_FREQ 48000000.0f // For Mailbox
+extern int DATA_BITS;
+extern int STOP_BITS;
 
 /* PL011 UART (UART0) registers */
 #define UART0_BASE (MMIO_BASE + 0x201000)
@@ -153,7 +155,7 @@
 #define UART0_TDR (*(volatile unsigned int *)(UART0_BASE + 0x8C))
 
 /* Function prototypes */
-void uart_init();
+void uart_init(int ibrd, int fbrd);
 void uart_sendc(char c);
 void uart_send_string(const char *str);
 char uart_getc();

@@ -30,8 +30,8 @@ const int num_commands = sizeof(command_list) / sizeof(command_list[0]);
 
 void main()
 {
-    int databits = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
-    uart_init(26, 3, databits);
+
+    uart_init(26, 3);
     display_welcome_msg();
     display_prompt();
 

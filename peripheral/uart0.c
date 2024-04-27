@@ -1,9 +1,12 @@
 #include "../header/uart0.h"
 
+int DATA_BITS = 8;
+int STOP_BITS = 2;
+
 /**
  * Set baud rate and characteristics and map to GPIO
  */
-void uart_init(int ibrd, int fbrd, int databits)
+void uart_init(int ibrd, int fbrd)
 {
 	unsigned int r;
 
@@ -60,8 +63,35 @@ void uart_init(int ibrd, int fbrd, int databits)
 	/* Set length to 8 bit */
 	/* Defaults for other bit are No parity, 1 stop bit */
 
-	UART0_LCRH = databits;
+	UART0_LCRH = 0;
 
+	// Data bits
+	if (DATA_BITS == 5)
+	{
+		UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
+	}
+	else if (DATA_BITS == 6)
+	{
+		UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
+	}
+	else if (DATA_BITS == 7)
+	{
+		UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
+	}
+	else if (DATA_BITS == 8)
+	{
+		UART0_LCRH = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
+	}
+
+	// Stop bits
+	if (STOP_BITS == 1)
+	{
+		UART0_LCRH &= ~UART0_LCRH_STP2;
+	}
+	else if (STOP_BITS == 2)
+	{
+		UART0_LCRH |= UART0_LCRH_STP2;
+	}
 	/* Enable UART0, receive, and transmit */
 	UART0_CR = 0x301; // enable Tx, Rx, FIFO
 }
@@ -260,22 +290,34 @@ void set_data_bits_command(char *arg)
 	// Get the number of data bits from the argument
 	int data_bits = atoi(arg);
 
+	if (data_bits == DATA_BITS)
+	{
+		// Same number of data bits
+		uart_puts("\nData bits remain the same.\n");
+		display_end();
+		return;
+	}
+
 	// Temporary variable to store the updated LCRH value
-	int lcrh;
+	int lcrh = 0;
 
 	// Update the Line Control Register (LCRH) accordingly
 	switch (data_bits)
 	{
 	case 5:
+		DATA_BITS = 5;
 		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
 		break;
 	case 6:
+		DATA_BITS = 6;
 		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
 		break;
 	case 7:
+		DATA_BITS = 7;
 		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
 		break;
 	case 8:
+		DATA_BITS = 8;
 		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
 		break;
 	default:
@@ -285,12 +327,14 @@ void set_data_bits_command(char *arg)
 		return;
 	}
 
-	if (lcrh == UART0_LCRH)
+	// Stop bits
+	if (STOP_BITS == 1)
 	{
-		// Same number of data bits
-		uart_puts("\nData bits remain the same.\n");
-		display_end();
-		return;
+		lcrh &= ~UART0_LCRH_STP2;
+	}
+	else if (STOP_BITS == 2)
+	{
+		lcrh |= UART0_LCRH_STP2;
 	}
 
 	uart_puts("\nLDRH before setting data bits: ");
@@ -312,9 +356,6 @@ void set_data_bits_command(char *arg)
 
 	UART0_CR = 0x0;
 
-	// Set the Line Control Register (LCRH) with the temporary value
-	UART0_LCRH = lcrh;
-
 	reset_uart();
 }
 
@@ -326,16 +367,26 @@ void set_stop_bits_command(char *arg)
 	// Get the number of stop bits from the argument
 	int stop_bits = atoi(arg);
 
+	if (stop_bits == STOP_BITS)
+	{
+		// Same stop bits
+		uart_puts("\nStop bits remain the same.\n");
+		display_end();
+		return;
+	}
+
 	// Temporary variable to store the updated LCRH value
-	int lcrh;
+	int lcrh = 0;
 
 	// Update the Line Control Register (LCRH) accordingly
 	switch (stop_bits)
 	{
 	case 1:
+		STOP_BITS = 1;
 		lcrh &= ~UART0_LCRH_STP2;
 		break;
 	case 2:
+		STOP_BITS = 2;
 		lcrh &= ~UART0_LCRH_STP2;
 		lcrh |= UART0_LCRH_STP2;
 		break;
@@ -346,12 +397,21 @@ void set_stop_bits_command(char *arg)
 		return;
 	}
 
-	if (lcrh == UART0_LCRH)
+	if (DATA_BITS == 5)
 	{
-		// Same stop bits
-		uart_puts("\nStop bits remain the same.\n");
-		display_end();
-		return;
+		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_5BIT;
+	}
+	else if (DATA_BITS == 6)
+	{
+		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_6BIT;
+	}
+	else if (DATA_BITS == 7)
+	{
+		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_7BIT;
+	}
+	else if (DATA_BITS == 8)
+	{
+		lcrh = UART0_LCRH_FEN | UART0_LCRH_WLEN_8BIT;
 	}
 
 	uart_puts("\nLDRH before setting stop bits: ");
@@ -364,16 +424,12 @@ void set_stop_bits_command(char *arg)
 	uart_puts("\n\nStop data bits have been changed. Please manually change the data bits of your environment.");
 
 	display_end();
-	display_prompt();
 
 	while (!(UART0_FR & UART0_FR_TXFE))
 	{
 	}
 
 	UART0_CR = 0x0;
-
-	// Set the Line Control Register (LCRH) with the temporary value
-	UART0_LCRH = lcrh;
 
 	reset_uart();
 }
@@ -462,5 +518,5 @@ void reset_uart()
 
 	UART0_CR |= 0x301;
 
-	uart_init(UART0_IBRD, UART0_FBRD, UART0_LCRH);
+	uart_init(UART0_IBRD, UART0_FBRD);
 }
