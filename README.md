@@ -54,3 +54,13 @@ This repository contains the individual assessment 2 for the course EEET2490 Emb
 - **`setparity <none, even or odd>`**: Configure parity. Options: none, even, or odd.
 
 - **`sethandshaking <on or off>`**: Set handshaking between CTS and RTS.
+
+## How To Run Locally
+
+1. **`/Makefile`**: Open the `/Makefile` file and adjust the configuration according to your setup. If you're using a Raspberry Pi 3, set `-M raspi3`, and for Raspberry Pi 4, set `-M raspi4`. If you're running the program in an environment like Visual Studio Code using QEMU emulation, ensure to match the configuration in the Makefile. Note that QEMU only supports Raspberry Pi 3 emulation.
+   
+2. **`/header/gpio.h`**: Depending on your machine configuration set in the previous step, define the machine name in the `gpio.h` file. If you're using a Raspberry Pi 3, set `#define RPI3` in the first line. Otherwise, you can comment it out or manually change it to `#define RPI4`.
+
+3. Run the command `make` in your terminal.
+
+4. Enjoy using KimOS!
