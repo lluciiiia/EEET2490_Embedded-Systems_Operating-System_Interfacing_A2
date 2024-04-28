@@ -7,7 +7,7 @@
 char command_buffer[MAX_COMMAND_LENGTH];
 int buffer_index = 0;
 
-// Comman history
+// Command history
 char command_history[MAX_HISTORY_SIZE][MAX_COMMAND_LENGTH];
 int history_count = 0;
 int history_index = 0;
