@@ -445,9 +445,6 @@ void set_handshaking_command(char *arg)
 
 	display_start("Handshaking Setting");
 
-	uart_puts("\nCR before handshaking: ");
-	uart_hex(UART0_CR);
-
 	unsigned int new_CR = UART0_CR;
 
 	if (compare_string(arg, "on") == 0)
@@ -474,6 +471,9 @@ void set_handshaking_command(char *arg)
 		display_end();
 		return;
 	}
+
+	uart_puts("\nCR before handshaking: ");
+	uart_hex(UART0_CR);
 
 	uart_puts("\nCR after handshaking: ");
 	uart_hex(new_CR);
