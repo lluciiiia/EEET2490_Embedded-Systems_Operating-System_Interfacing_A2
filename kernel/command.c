@@ -88,7 +88,7 @@ void help_command(char *command)
         uart_puts("                                                             Colors: black, red, yellow, blue, purple, cyan, white\n\n");
         uart_puts("showinfo                                                     Show board revision and board MAC address\n\n");
         uart_puts("setbaudrate <baud rates>                                     Set desired baud rates\n");
-        uart_puts("                                                             Baud rates: 9600, 19200, 38400, 57600, 115200\n\n");
+        uart_puts("                                                             Baud rates (Recommendations): 9600, 19200, 38400, 57600, 115200\n\n");
         uart_puts("setdatabits <the number of data bits>                        Set the number of data bits\n");
         uart_puts("                                                             Data bits: 5, 6, 7, or 8\n\n");
         uart_puts("setstopbits <1 or 2>                                         Select between one or two stop bits\n");
