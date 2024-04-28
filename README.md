@@ -64,3 +64,13 @@ This repository contains the individual assessment 2 for the course EEET2490 Emb
 3. Run the command `make` in your terminal.
 
 4. Enjoy using KimOS!
+
+## Default UART Configuration in KimOS System
+
+1. Baudrate: 115200
+2. Data Bits: 8
+3. Stop Bits: 2
+4. Parity: None
+5. Handshaking: Off
+
+Ensure that your terminal configuration matches the settings in the KimOS system; otherwise, the program may not run properly. Once the program starts successfully, you can change the configuration using KimOS's commands and guidance.
