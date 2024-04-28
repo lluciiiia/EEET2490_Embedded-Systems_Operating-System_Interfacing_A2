@@ -525,7 +525,7 @@ int set_lcfh_val()
 		lcfh |= UART0_LCRH_STP2;
 	}
 
-	// Stop bits
+	// Parity
 	if (PARITY == 0) // None
 	{
 		lcfh &= ~(UART0_LCRH_PEN | UART0_LCRH_EPS);
