@@ -61,7 +61,7 @@ This repository contains the individual assessment 2 for the course EEET2490 Emb
    
 2. **`/header/gpio.h`**: Depending on your machine configuration set in the previous step, define the machine name in the `gpio.h` file. If you're using a Raspberry Pi 3, set `#define RPI3` in the first line. Otherwise, you can comment it out or manually change it to `#define RPI4`.
 
-3. Run the command `make` in your terminal.
+3. Run the command `make` in your terminal. If you are using an external terminal such as Tera Term with a board, ensure to copy the `/object/kernel8.img` file to your SD card.
 
 4. Enjoy using KimOS!
 
