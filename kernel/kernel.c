@@ -145,8 +145,6 @@ void add_to_history(const char *command)
         copy_string(command_history[history_count], command);
         history_count++;
     }
-
-    history_index = history_count - 1;
 }
 
 void display_history()
