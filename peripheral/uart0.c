@@ -467,7 +467,7 @@ void set_handshaking_command(char *arg)
 	if (new_CR == UART0_CR)
 	{
 		// Same handshaking
-		uart_puts("\nHandshaking remain the same.\n");
+		uart_puts("\nHandshaking remains the same.\n");
 		display_end();
 		return;
 	}
