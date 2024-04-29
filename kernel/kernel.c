@@ -72,19 +72,39 @@ void main()
                 uart_sendc(c);
 
                 // Remove the last character
-                command_buffer[buffer_index--] = '\0';
+                buffer_index = buffer_index - 1;
+                command_buffer[buffer_index] = '\0';
                 cur_prefix[buffer_index] = '\0';
                 last_autocompletion[buffer_index] = '\0';
             }
         }
         else if (c == '\t') // TAB key for autocompletion
         {
+            int skipped_index = 0;
 
-            for (int i = 0; i < num_commands; i++)
+            if (strlen(last_autocompletion) > 0)
             {
+                for (int i = 0; i < num_commands; i++)
+                {
+                    // check index to skip
+                    if (compare_string(last_autocompletion, command_list[i]) == 0)
+                    {
+                        skipped_index = i + 1;
+                        break;
+                    }
+                }
 
+                // if skipped index is at the end of the command list
+                if (skipped_index == num_commands)
+                    skipped_index = 0;
+            }
+
+            for (int i = skipped_index; i < skipped_index + num_commands; i++)
+            {
+                skipped_index = i % num_commands;
                 if (is_prefix(cur_prefix, command_list[i]) == 0)
                 {
+
                     reset_command_line();
                     clear_buffer();
 
@@ -119,9 +139,11 @@ void main()
         }
         else // Regular characters
         {
+
             // Add the character to the command buffer
             command_buffer[buffer_index] = c;
             cur_prefix[buffer_index] = c;
+            copy_string(last_autocompletion, cur_prefix);
 
             buffer_index++;
 
