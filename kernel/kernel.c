@@ -80,43 +80,20 @@ void main()
         }
         else if (c == '\t') // TAB key for autocompletion
         {
-            int skipped_index = 0;
+            int next_index = find_next_auto_completion();
 
-            if (strlen(last_autocompletion) > 0)
+            if (next_index != -1)
             {
-                for (int i = 0; i < num_commands; i++)
-                {
-                    // check index to skip
-                    if (compare_string(last_autocompletion, command_list[i]) == 0)
-                    {
-                        skipped_index = i + 1;
-                        break;
-                    }
-                }
+                reset_command_line();
+                clear_buffer();
 
-                // if skipped index is at the end of the command list
-                if (skipped_index == num_commands)
-                    skipped_index = 0;
-            }
+                copy_string(last_autocompletion, command_list[next_index]);
+                copy_string(command_buffer, command_list[next_index]);
 
-            for (int i = skipped_index; i < skipped_index + num_commands; i++)
-            {
-                skipped_index = i % num_commands;
-                if (is_prefix(cur_prefix, command_list[i]) == 0)
-                {
+                int length = strlen(command_buffer);
+                buffer_index = length;
 
-                    reset_command_line();
-                    clear_buffer();
-
-                    copy_string(last_autocompletion, command_list[i]);
-                    copy_string(command_buffer, command_list[i]);
-
-                    int length = strlen(command_buffer);
-                    buffer_index = length;
-
-                    uart_puts(last_autocompletion);
-                    break;
-                }
+                uart_puts(last_autocompletion);
             }
         }
         else if (c == '_') // UP arrow key
@@ -195,4 +172,37 @@ void display_history()
     }
 
     uart_send_string(history);
+}
+
+int find_next_auto_completion()
+{
+    int skipped_index = 0;
+
+    if (strlen(last_autocompletion) > 0)
+    {
+        for (int i = 0; i < num_commands; i++)
+        {
+            // check index to skip
+            if (compare_string(last_autocompletion, command_list[i]) == 0)
+            {
+                skipped_index = i + 1;
+                break;
+            }
+        }
+
+        // if skipped index is at the end of the command list
+        if (skipped_index == num_commands)
+            skipped_index = 0;
+    }
+
+    for (int i = skipped_index; i < skipped_index + num_commands; i++)
+    {
+        skipped_index = i % num_commands;
+        if (is_prefix(cur_prefix, command_list[i]) == 0)
+        {
+            return skipped_index;
+        }
+    }
+
+    return -1; // No auto-completion found
 }
