@@ -13,7 +13,8 @@ int history_count = 0;
 int history_index = 0;
 
 // Command auto completion
-int auto_complete_index = 0;
+char cur_prefix[20];
+char last_autocompletion[20];
 
 const char *command_list[] = {
     "help",
@@ -46,7 +47,7 @@ void main()
             add_to_history(command_buffer);
 
             // Null-terminate the command buffer
-            command_buffer[buffer_index] = '\0';
+            command_buffer[buffer_index++] = '\0';
 
             // Execute the command
             execute_command(command_buffer);
@@ -54,7 +55,10 @@ void main()
             // Reset indexes for next command
             buffer_index = 0;
             history_index = history_count - 1;
-            auto_complete_index = 0;
+
+            copy_string(cur_prefix, "");
+            copy_string(command_buffer, "");
+            copy_string(last_autocompletion, "");
 
             // Display prompt for next command
             display_prompt();
@@ -67,29 +71,33 @@ void main()
                 // Move the cursor back one position
                 uart_sendc(c);
 
-                // Remove the last character from the command buffer
-                buffer_index--;
+                // Remove the last character
+                command_buffer[buffer_index--] = '\0';
+                cur_prefix[buffer_index] = '\0';
+                last_autocompletion[buffer_index] = '\0';
             }
         }
         else if (c == '\t') // TAB key for autocompletion
         {
-            reset_command_line();
 
-            clear_buffer();
-
-            buffer_index = 0;
-
-            const char *suggestion = command_list[auto_complete_index];
-
-            for (int i = 0; suggestion[i] != '\0'; i++)
+            for (int i = 0; i < num_commands; i++)
             {
-                uart_sendc(suggestion[i]);
-                command_buffer[buffer_index++] = suggestion[i];
-            }
 
-            auto_complete_index++;
-            if (auto_complete_index == num_commands)
-                auto_complete_index = 0;
+                if (is_prefix(cur_prefix, command_list[i]) == 0)
+                {
+                    reset_command_line();
+                    clear_buffer();
+
+                    copy_string(last_autocompletion, command_list[i]);
+                    copy_string(command_buffer, command_list[i]);
+
+                    int length = strlen(command_buffer);
+                    buffer_index = length;
+
+                    uart_puts(last_autocompletion);
+                    break;
+                }
+            }
         }
         else if (c == '_') // UP arrow key
         {
@@ -112,7 +120,11 @@ void main()
         else // Regular characters
         {
             // Add the character to the command buffer
-            command_buffer[buffer_index++] = c;
+            command_buffer[buffer_index] = c;
+            cur_prefix[buffer_index] = c;
+
+            buffer_index++;
+
             uart_sendc(c); // Echo back to console
         }
     }

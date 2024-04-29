@@ -118,3 +118,19 @@ char hex_to_ascii(uint8_t value)
     // Convert value to ASCII character
     return value < 10 ? '0' + value : 'A' + (value - 10);
 }
+
+// Function to check if a string `prefix` is a prefix of string `str`
+int is_prefix(const char *prefix, const char *str) {
+    // Iterate through each character of `prefix`
+    while (*prefix != '\0') {
+        // If characters don't match, return false
+        if (*prefix != *str) {
+            return -1;
+        }
+        // Move to the next character in both strings
+        prefix++;
+        str++;
+    }
+    // If all characters in `prefix` match, return true
+    return 0;
+}

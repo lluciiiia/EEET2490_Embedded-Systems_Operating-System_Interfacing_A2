@@ -18,3 +18,5 @@ unsigned int strlen(const char *str);
 int atoi(const char *str);
 
 char hex_to_ascii(uint8_t value);
+
+int is_prefix(const char *prefix, const char *str);
